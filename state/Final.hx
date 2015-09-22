@@ -1,6 +1,9 @@
 package state;
 
+import js.Browser;
+import js.html.Document;
 import js.html.Element;
+import js.html.InputElement;
 
 class Final implements IState
 {
@@ -38,15 +41,15 @@ class Final implements IState
         App.switchState(new Menu(surface));
     }
 
+    private function generateStand(width:Float, height:Float):Void
+    {
+    }
+
     private function createButtons():Void
     {
         var btnCustom:Element = Browser.document.createElement("button");
         btnCustom.innerHTML = "Customize";
         btnCustom.onclick = displayCustom;
         container.appendChild(btnCustom);
-    }
-
-    private function generateStand(width:Float, height:Float):Void
-    {
     }
 }

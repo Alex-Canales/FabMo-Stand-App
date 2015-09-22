@@ -13,9 +13,10 @@ App.switchState = function(newState) {
 	newState.create();
 	App.currentState = newState;
 };
-App.checkFloat = function(element) {
+App.checkFloat = function(element,minVal) {
+	if(minVal == null) minVal = 0;
 	var number = parseFloat(element.value);
-	if(!isFinite(number)) number = 0;
+	if(!isFinite(number) || number < minVal) number = minVal;
 	element.value = number;
 	return number;
 };
@@ -164,19 +165,29 @@ element_Rectangle.prototype = {
 	}
 };
 var state_IState = function() { };
-var state_Custom = function(surface) {
+var state_Custom = function(surface,widthInInch,heightInInch) {
+	if(heightInInch == null) heightInInch = 0;
+	if(widthInInch == null) widthInInch = 0;
 	console.log("Final custom.");
 	this.container = window.document.getElementById("finalization");
 	this.surface = surface;
+	this.setWidth(widthInInch);
+	this.setHeight(heightInInch);
 };
 state_Custom.__interfaces__ = [state_IState];
 state_Custom.prototype = {
 	create: function() {
 		this.createButtons();
-		var width = 3 * this.surface.inToPx;
-		var height = 3 * this.surface.inToPx;
-		this.rectangle = new element_Rectangle(5,5,false,null,width,height);
+		this.rectangle = new element_Rectangle(5,5,false,null,this.width,this.height);
 		this.surface.add(this.rectangle);
+	}
+	,setWidth: function(widthInInch) {
+		widthInInch = Math.max(state_Custom.MIN_WIDTH,widthInInch);
+		this.width = widthInInch * this.surface.inToPx;
+	}
+	,setHeight: function(heightInInch) {
+		heightInInch = Math.max(state_Custom.MIN_WIDTH,heightInInch);
+		this.height = heightInInch * this.surface.inToPx;
 	}
 	,destroy: function() {
 		this.container.innerHTML = "";
@@ -185,32 +196,72 @@ state_Custom.prototype = {
 	,displayMenu: function() {
 		App.switchState(new state_Menu(this.surface));
 	}
+	,displayFinal: function() {
+		App.switchState(new state_Final(this.surface,this.width,this.height));
+	}
 	,setSize: function() {
-		var width = App.checkFloat(this.iptWidth) * this.surface.inToPx;
-		var height = App.checkFloat(this.iptHeight) * this.surface.inToPx;
-		console.log("" + width + " x " + height);
+		this.setWidth(App.checkFloat(this.iptWidth,state_Custom.MIN_WIDTH));
+		this.setHeight(App.checkFloat(this.iptHeight,state_Custom.MIN_WIDTH));
+		this.rectangle.width = this.width;
+		this.rectangle.height = this.height;
+		this.surface.draw();
 	}
 	,createButtons: function() {
 		var btnMenu = window.document.createElement("button");
 		btnMenu.innerHTML = "Menu";
 		btnMenu.onclick = $bind(this,this.displayMenu);
 		this.container.appendChild(btnMenu);
+		var btnFinal = window.document.createElement("button");
+		btnFinal.innerHTML = "Next";
+		btnFinal.onclick = $bind(this,this.displayFinal);
+		this.container.appendChild(btnFinal);
 		var lblWidth = window.document.createElement("label");
 		lblWidth.innerHTML = "Width:";
 		this.container.appendChild(lblWidth);
 		this.iptWidth = window.document.createElement("input");
 		this.iptWidth.type = "text";
+		this.iptWidth.value = this.width / this.surface.inToPx;
 		this.container.appendChild(this.iptWidth);
 		var lblHeight = window.document.createElement("label");
 		lblHeight.innerHTML = "Height:";
 		this.container.appendChild(lblHeight);
 		this.iptHeight = window.document.createElement("input");
 		this.iptHeight.type = "text";
+		this.iptHeight.value = this.height / this.surface.inToPx;
 		this.container.appendChild(this.iptHeight);
 		var btnSet = window.document.createElement("button");
 		btnSet.innerHTML = "Set size";
 		btnSet.onclick = $bind(this,this.setSize);
 		this.container.appendChild(btnSet);
+	}
+};
+var state_Final = function(surface,width,height) {
+	console.log("Final state.");
+	this.container = window.document.getElementById("finalization");
+	this.surface = surface;
+};
+state_Final.__interfaces__ = [state_IState];
+state_Final.prototype = {
+	create: function() {
+		this.createButtons();
+	}
+	,destroy: function() {
+		this.container.innerHTML = "";
+		this.surface.removeAll();
+	}
+	,displayCustom: function() {
+		App.switchState(new state_Custom(this.surface));
+	}
+	,displayMenu: function() {
+		App.switchState(new state_Menu(this.surface));
+	}
+	,generateStand: function(width,height) {
+	}
+	,createButtons: function() {
+		var btnCustom = window.document.createElement("button");
+		btnCustom.innerHTML = "Customize";
+		btnCustom.onclick = $bind(this,this.displayCustom);
+		this.container.appendChild(btnCustom);
 	}
 };
 var state_Menu = function(surface) {
@@ -242,5 +293,7 @@ function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id
 if(Array.prototype.indexOf) HxOverrides.indexOf = function(a,o,i) {
 	return Array.prototype.indexOf.call(a,o,i);
 };
+state_Custom.MIN_WIDTH = 3;
+state_Custom.MIN_HEIGHT = 3;
 Main.main();
 })(typeof console != "undefined" ? console : {log:function(){}});

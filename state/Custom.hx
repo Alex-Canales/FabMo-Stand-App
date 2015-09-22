@@ -15,21 +15,40 @@ class Custom implements IState
     private var iptWidth:InputElement;
     private var iptHeight:InputElement;
 
-    public function new(surface:Surface)
+    private var width:Float;
+    private var height:Float;
+
+    private static var MIN_WIDTH(default, null):Float = 3;
+    private static var MIN_HEIGHT(default, null):Float = 3;
+
+    public function new(surface:Surface, widthInInch:Float=0, heightInInch:Float=0)
     {
         trace("Final custom.");
         container = Browser.document.getElementById("finalization");
         this.surface = surface;
+        setWidth(widthInInch);
+        setHeight(heightInInch);
         //NOTE: do not write any thing in new
     }
+
     public function create():Void
     {
         createButtons();
 
-        var width:Float = 3 * surface.inToPx;
-        var height:Float = 3 * surface.inToPx;
         rectangle = new element.Rectangle(5, 5, false, null, width, height);
         surface.add(rectangle);
+    }
+
+    private function setWidth(widthInInch):Void
+    {
+        widthInInch = Math.max(MIN_WIDTH, widthInInch);
+        width = widthInInch * surface.inToPx;
+    }
+
+    private function setHeight(heightInInch):Void
+    {
+        heightInInch = Math.max(MIN_WIDTH, heightInInch);
+        height = heightInInch * surface.inToPx;
     }
 
     public function destroy():Void
@@ -43,11 +62,19 @@ class Custom implements IState
         App.switchState(new Menu(surface));
     }
 
+    private function displayFinal():Void
+    {
+        App.switchState(new Final(surface, width, height));
+    }
+
     private function setSize():Void
     {
-        var width:Float = App.checkFloat(iptWidth) * surface.inToPx;
-        var height:Float = App.checkFloat(iptHeight) * surface.inToPx;
-        trace('$width x $height');
+        setWidth(App.checkFloat(iptWidth, MIN_WIDTH));
+        setHeight(App.checkFloat(iptHeight, MIN_WIDTH));
+
+        rectangle.width = width;
+        rectangle.height = height;
+        surface.draw();
     }
 
     private function createButtons():Void
@@ -57,12 +84,18 @@ class Custom implements IState
         btnMenu.onclick = displayMenu;
         container.appendChild(btnMenu);
 
+        var btnFinal:Element = Browser.document.createElement("button");
+        btnFinal.innerHTML = "Next";
+        btnFinal.onclick = displayFinal;
+        container.appendChild(btnFinal);
+
         var lblWidth:Element = cast Browser.document.createElement("label");
         lblWidth.innerHTML = "Width:";
         container.appendChild(lblWidth);
 
         iptWidth = cast Browser.document.createElement("input");
         iptWidth.type = "text";
+        iptWidth.value = cast (width / surface.inToPx);
         container.appendChild(iptWidth);
 
         var lblHeight:Element = cast Browser.document.createElement("label");
@@ -71,6 +104,7 @@ class Custom implements IState
 
         iptHeight = cast Browser.document.createElement("input");
         iptHeight.type = "text";
+        iptHeight.value = cast (height / surface.inToPx);
         container.appendChild(iptHeight);
 
         var btnSet:Element = Browser.document.createElement("button");

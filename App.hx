@@ -39,12 +39,12 @@ class App
     }
 
     //If value not a number, becomes 0
-    public static function checkFloat(element:InputElement):Float
+    public static function checkFloat(element:InputElement, minVal:Float=0):Float
     {
         var number:Float = Std.parseFloat(element.value);
 
-        if(!Math.isFinite(number))
-            number = 0;
+        if(!Math.isFinite(number) || number < minVal)
+            number = minVal;
         element.value = cast number;
 
         return number;
