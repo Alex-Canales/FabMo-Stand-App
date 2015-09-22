@@ -122,6 +122,48 @@ Surface.prototype = {
 	}
 };
 var element_IElement = function() { };
+var element_Dogbone = function(x,y,draggable,callback,width,height,radius) {
+	this.x = x;
+	this.y = y;
+	this.draggable = draggable;
+	this.callback = callback;
+	this.width = width;
+	this.height = height;
+	this.radius = radius;
+};
+element_Dogbone.__interfaces__ = [element_IElement];
+element_Dogbone.prototype = {
+	draw: function(context) {
+		var xLeftBone = this.x + this.radius;
+		var xRightBone = this.x + this.width - this.radius;
+		var yTopBone = this.y;
+		var yBottomBone = this.y + this.height;
+		console.log("Drawing dogbone");
+		context.beginPath();
+		context.rect(this.x,this.y,this.width,this.height);
+		context.fillStyle = "0x000000";
+		context.fill();
+		context.lineWidth = 1;
+		context.strokeStyle = "0x000000";
+		context.stroke();
+		context.arc(xLeftBone,yTopBone,this.radius,Math.PI,2 * Math.PI,false);
+		context.fillStyle = "0x000000";
+		context.fill();
+		context.stroke();
+		context.arc(xLeftBone,yTopBone,this.radius,0,Math.PI,false);
+		context.fillStyle = "0x000000";
+		context.fill();
+		context.stroke();
+		context.arc(xRightBone,yTopBone,this.radius,Math.PI,2 * Math.PI,false);
+		context.fillStyle = "0x000000";
+		context.fill();
+		context.stroke();
+		context.arc(xRightBone,yTopBone,this.radius,0,Math.PI,false);
+		context.fillStyle = "0x000000";
+		context.fill();
+		context.stroke();
+	}
+};
 var element_Rectangle = function(x,y,draggable,callback,width,height,lineWidth,lineColor,fillColor) {
 	if(lineColor == null) lineColor = 0;
 	if(lineWidth == null) lineWidth = 1;
@@ -168,6 +210,8 @@ state_Custom.prototype = {
 		var hR = this.height * this.surface.inToPx;
 		this.rectangle = new element_Rectangle(5,5,false,null,wR,hR);
 		this.surface.add(this.rectangle);
+		var elt = new element_Dogbone(100,100,false,null,100,10,20);
+		this.surface.add(elt);
 	}
 	,setWidth: function(widthInInch) {
 		this.width = Math.max(state_Custom.MIN_WIDTH,widthInInch);
@@ -227,10 +271,7 @@ state_Final.prototype = {
 	,generateStand: function(width,height) {
 	}
 	,createButtons: function() {
-		var btnCustom = window.document.createElement("button");
-		btnCustom.innerHTML = "Customize";
-		btnCustom.onclick = $bind(this,this.displayCustom);
-		this.container.appendChild(btnCustom);
+		this.container.appendChild(App.createButton("Customize",$bind(this,this.displayCustom)));
 	}
 };
 var state_Menu = function(surface) {

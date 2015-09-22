@@ -51,9 +51,6 @@ class Final implements IState
 
     private function createButtons():Void
     {
-        var btnCustom:Element = Browser.document.createElement("button");
-        btnCustom.innerHTML = "Customize";
-        btnCustom.onclick = displayCustom;
-        container.appendChild(btnCustom);
+        container.appendChild(App.createButton("Customize", displayCustom));
     }
 }

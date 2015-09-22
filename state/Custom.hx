@@ -39,6 +39,10 @@ class Custom implements IState
         var hR:Float = height * surface.inToPx;
         rectangle = new element.Rectangle(5, 5, false, null, wR, hR);
         surface.add(rectangle);
+
+        //TODO: remove test
+        var elt:element.Dogbone = new element.Dogbone(100, 100, false, null, 100, 10, 20);
+        surface.add(elt);
     }
 
     private function setWidth(widthInInch):Void
