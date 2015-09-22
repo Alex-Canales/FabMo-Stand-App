@@ -143,14 +143,14 @@ element_Dogbone.prototype = {
 		context.rect(this.x,this.y,this.width,this.height);
 		context.fillStyle = "0x000000";
 		context.fill();
-		context.lineWidth = 1;
+		context.lineWidth = 0;
 		context.strokeStyle = "0x000000";
 		context.stroke();
 		context.arc(xLeftBone,yTopBone,this.radius,Math.PI,2 * Math.PI,false);
 		context.fillStyle = "0x000000";
 		context.fill();
 		context.stroke();
-		context.arc(xLeftBone,yTopBone,this.radius,0,Math.PI,false);
+		context.arc(xLeftBone,yBottomBone,this.radius,0,Math.PI,false);
 		context.fillStyle = "0x000000";
 		context.fill();
 		context.stroke();
@@ -158,7 +158,7 @@ element_Dogbone.prototype = {
 		context.fillStyle = "0x000000";
 		context.fill();
 		context.stroke();
-		context.arc(xRightBone,yTopBone,this.radius,0,Math.PI,false);
+		context.arc(xRightBone,yBottomBone,this.radius,0,Math.PI,false);
 		context.fillStyle = "0x000000";
 		context.fill();
 		context.stroke();

@@ -39,7 +39,7 @@ class Dogbone implements IElement
         context.rect(x, y, width, height);
         context.fillStyle = "0x000000";
         context.fill();
-        context.lineWidth = 1;
+        context.lineWidth = 0;
         context.strokeStyle = "0x000000";
         context.stroke();
 
@@ -50,7 +50,7 @@ class Dogbone implements IElement
         context.stroke();
 
         //Draw shape bottom left
-        context.arc(xLeftBone, yTopBone, radius, 0, Math.PI, false);
+        context.arc(xLeftBone, yBottomBone, radius, 0, Math.PI, false);
         context.fillStyle = "0x000000";
         context.fill();
         context.stroke();
@@ -62,7 +62,7 @@ class Dogbone implements IElement
         context.stroke();
 
         //Draw bottom right
-        context.arc(xRightBone, yTopBone, radius, 0, Math.PI, false);
+        context.arc(xRightBone, yBottomBone, radius, 0, Math.PI, false);
         context.fillStyle = "0x000000";
         context.fill();
         context.stroke();
