@@ -81,37 +81,18 @@ class Custom implements IState
 
     private function createButtons():Void
     {
-        var btnMenu:Element = Browser.document.createElement("button");
-        btnMenu.innerHTML = "Menu";
-        btnMenu.onclick = displayMenu;
-        container.appendChild(btnMenu);
+        container.appendChild(App.createButton("Menu", displayMenu));
+        container.appendChild(App.createButton("Next", displayFinal));
+        container.appendChild(App.createLabel("Width:"));
 
-        var btnFinal:Element = Browser.document.createElement("button");
-        btnFinal.innerHTML = "Next";
-        btnFinal.onclick = displayFinal;
-        container.appendChild(btnFinal);
-
-        var lblWidth:Element = cast Browser.document.createElement("label");
-        lblWidth.innerHTML = "Width:";
-        container.appendChild(lblWidth);
-
-        iptWidth = cast Browser.document.createElement("input");
-        iptWidth.type = "text";
-        iptWidth.value = cast width;
+        iptWidth = App.createInputText(cast width);
         container.appendChild(iptWidth);
 
-        var lblHeight:Element = cast Browser.document.createElement("label");
-        lblHeight.innerHTML = "Height:";
-        container.appendChild(lblHeight);
+        container.appendChild(App.createLabel("Height:"));
 
-        iptHeight = cast Browser.document.createElement("input");
-        iptHeight.type = "text";
-        iptHeight.value = cast height;
+        iptHeight = App.createInputText(cast height);
         container.appendChild(iptHeight);
 
-        var btnSet:Element = Browser.document.createElement("button");
-        btnSet.innerHTML = "Set size";
-        btnSet.onclick = setSize;
-        container.appendChild(btnSet);
+        container.appendChild(App.createButton("Set size", setSize));
     }
 }

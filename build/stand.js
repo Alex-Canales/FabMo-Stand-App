@@ -20,36 +20,22 @@ App.checkFloat = function(element,minVal) {
 	element.value = number;
 	return number;
 };
-App.prototype = {
-	displayUI: function(id) {
-		var ids = ["menu","custom","finalization"];
-		var _g = 0;
-		while(_g < ids.length) {
-			var i = ids[_g];
-			++_g;
-			this.document.getElementById(i).style.display = "none";
-		}
-		this.document.getElementById(id).style.display = "block";
-	}
-	,displayMenu: function() {
-		this.displayUI("menu");
-	}
-	,displayCustom: function() {
-		this.displayUI("custom");
-	}
-	,displayFinalization: function(width,height,holes) {
-		this.displayUI("finalization");
-		this.stand.width = width;
-		this.stand.height = height;
-		this.stand.holes = holes;
-	}
-	,setButtons: function() {
-		this.document.getElementById("go-custom").onclick = $bind(this,this.displayCustom);
-		this.document.getElementById("go-finalize").onclick = $bind(this,this.displayFinalization);
-		this.document.getElementById("back-custom").onclick = $bind(this,this.displayCustom);
-		this.document.getElementById("back-menu").onclick = $bind(this,this.displayMenu);
-		this.document.getElementById("back-menu2").onclick = $bind(this,this.displayMenu);
-	}
+App.createButton = function(text,callback) {
+	var button = window.document.createElement("button");
+	button.innerHTML = text;
+	button.onclick = callback;
+	return button;
+};
+App.createLabel = function(text) {
+	var label = window.document.createElement("label");
+	label.innerHTML = text;
+	return label;
+};
+App.createInputText = function(value) {
+	var input = window.document.createElement("input");
+	input.type = "text";
+	input.value = value;
+	return input;
 };
 var HxOverrides = function() { };
 HxOverrides.indexOf = function(a,obj,i) {
@@ -207,32 +193,15 @@ state_Custom.prototype = {
 		this.surface.draw();
 	}
 	,createButtons: function() {
-		var btnMenu = window.document.createElement("button");
-		btnMenu.innerHTML = "Menu";
-		btnMenu.onclick = $bind(this,this.displayMenu);
-		this.container.appendChild(btnMenu);
-		var btnFinal = window.document.createElement("button");
-		btnFinal.innerHTML = "Next";
-		btnFinal.onclick = $bind(this,this.displayFinal);
-		this.container.appendChild(btnFinal);
-		var lblWidth = window.document.createElement("label");
-		lblWidth.innerHTML = "Width:";
-		this.container.appendChild(lblWidth);
-		this.iptWidth = window.document.createElement("input");
-		this.iptWidth.type = "text";
-		this.iptWidth.value = this.width;
+		this.container.appendChild(App.createButton("Menu",$bind(this,this.displayMenu)));
+		this.container.appendChild(App.createButton("Next",$bind(this,this.displayFinal)));
+		this.container.appendChild(App.createLabel("Width:"));
+		this.iptWidth = App.createInputText(this.width);
 		this.container.appendChild(this.iptWidth);
-		var lblHeight = window.document.createElement("label");
-		lblHeight.innerHTML = "Height:";
-		this.container.appendChild(lblHeight);
-		this.iptHeight = window.document.createElement("input");
-		this.iptHeight.type = "text";
-		this.iptHeight.value = this.height;
+		this.container.appendChild(App.createLabel("Height:"));
+		this.iptHeight = App.createInputText(this.height);
 		this.container.appendChild(this.iptHeight);
-		var btnSet = window.document.createElement("button");
-		btnSet.innerHTML = "Set size";
-		btnSet.onclick = $bind(this,this.setSize);
-		this.container.appendChild(btnSet);
+		this.container.appendChild(App.createButton("Set size",$bind(this,this.setSize)));
 	}
 };
 var state_Final = function(surface,width,height) {

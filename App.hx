@@ -50,47 +50,27 @@ class App
         return number;
     }
 
-    private function displayUI(id:String):Void
+    public static function createButton(text:String, callback:Dynamic):Element
     {
-        var ids:Array<String> = ["menu", "custom", "finalization"];
-        for(i in ids) {
-            document.getElementById(i).style.display = "none";
-        }
-        document.getElementById(id).style.display = "block";
+        var button:Element = Browser.document.createElement("button");
+        button.innerHTML = text;
+        button.onclick = callback;
+        return button;
     }
 
-    private function displayMenu():Void
+    public static function createLabel(text:String):Element
     {
-        displayUI("menu");
-        // Stand.elements = [];
-        // Stand.createTextElement(10, 10, false, undefined, "text");
-        // // var customize = { type : "text", x : 10, y : 10, text : "Customize",
-        // //     callback : Stand.displayCustom };
-        // // Stand.elements.push(customize);
-        // Stand.drawCanvas();
+        var label:Element = Browser.document.createElement("label");
+        label.innerHTML = text;
+        return label;
     }
 
-    private function displayCustom():Void
+    public static function createInputText(value:String):InputElement
     {
-        displayUI("custom");
+        var input:InputElement = cast Browser.document.createElement("input");
+        input.type = "text";
+        input.value = cast value;
+        return input;
     }
 
-    private function displayFinalization(width:Float, height:Float,
-            holes:Array<Hole>):Void
-    {
-        displayUI("finalization");
-        stand.width = width;
-        stand.height = height;
-        stand.holes = holes;
-    }
-
-    private function setButtons():Void
-    {
-        document.getElementById("go-custom").onclick = displayCustom;
-        document.getElementById("go-finalize").onclick = displayFinalization;
-        document.getElementById("back-custom").onclick = displayCustom;
-        document.getElementById("back-menu").onclick = displayMenu;
-        document.getElementById("back-menu2").onclick = displayMenu;
-        // document.getElementById("make-file").onclick = makeFile;
-    }
 }

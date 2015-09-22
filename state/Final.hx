@@ -10,6 +10,10 @@ class Final implements IState
     public var container:Element;
     public var surface:Surface;
 
+    private var iptFeedrate:InputElement;
+    private var iptBitWidth:InputElement;
+    private var iptThickness:InputElement;
+
     //TODO; define stand here
 
     public function new(surface:Surface, width:Float, height:Float)
