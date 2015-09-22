@@ -15,8 +15,8 @@ class Custom implements IState
     private var iptWidth:InputElement;
     private var iptHeight:InputElement;
 
-    private var width:Float;
-    private var height:Float;
+    private var width:Float;    //Store width in inches
+    private var height:Float;   //Store width in inches
 
     private static var MIN_WIDTH(default, null):Float = 3;
     private static var MIN_HEIGHT(default, null):Float = 3;
@@ -35,20 +35,22 @@ class Custom implements IState
     {
         createButtons();
 
-        rectangle = new element.Rectangle(5, 5, false, null, width, height);
+        var wR:Float = width * surface.inToPx;
+        var hR:Float = height * surface.inToPx;
+        rectangle = new element.Rectangle(5, 5, false, null, wR, hR);
         surface.add(rectangle);
     }
 
     private function setWidth(widthInInch):Void
     {
-        widthInInch = Math.max(MIN_WIDTH, widthInInch);
-        width = widthInInch * surface.inToPx;
+        width = Math.max(MIN_WIDTH, widthInInch);
+        // width = widthInInch * surface.inToPx;
     }
 
     private function setHeight(heightInInch):Void
     {
-        heightInInch = Math.max(MIN_WIDTH, heightInInch);
-        height = heightInInch * surface.inToPx;
+        height = Math.max(MIN_WIDTH, heightInInch);
+        // height = heightInInch * surface.inToPx;
     }
 
     public function destroy():Void
@@ -72,8 +74,8 @@ class Custom implements IState
         setWidth(App.checkFloat(iptWidth, MIN_WIDTH));
         setHeight(App.checkFloat(iptHeight, MIN_WIDTH));
 
-        rectangle.width = width;
-        rectangle.height = height;
+        rectangle.width = width * surface.inToPx;
+        rectangle.height = height * surface.inToPx;
         surface.draw();
     }
 
@@ -95,7 +97,7 @@ class Custom implements IState
 
         iptWidth = cast Browser.document.createElement("input");
         iptWidth.type = "text";
-        iptWidth.value = cast (width / surface.inToPx);
+        iptWidth.value = cast width;
         container.appendChild(iptWidth);
 
         var lblHeight:Element = cast Browser.document.createElement("label");
@@ -104,7 +106,7 @@ class Custom implements IState
 
         iptHeight = cast Browser.document.createElement("input");
         iptHeight.type = "text";
-        iptHeight.value = cast (height / surface.inToPx);
+        iptHeight.value = cast height;
         container.appendChild(iptHeight);
 
         var btnSet:Element = Browser.document.createElement("button");

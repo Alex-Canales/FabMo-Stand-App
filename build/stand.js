@@ -178,16 +178,16 @@ state_Custom.__interfaces__ = [state_IState];
 state_Custom.prototype = {
 	create: function() {
 		this.createButtons();
-		this.rectangle = new element_Rectangle(5,5,false,null,this.width,this.height);
+		var wR = this.width * this.surface.inToPx;
+		var hR = this.height * this.surface.inToPx;
+		this.rectangle = new element_Rectangle(5,5,false,null,wR,hR);
 		this.surface.add(this.rectangle);
 	}
 	,setWidth: function(widthInInch) {
-		widthInInch = Math.max(state_Custom.MIN_WIDTH,widthInInch);
-		this.width = widthInInch * this.surface.inToPx;
+		this.width = Math.max(state_Custom.MIN_WIDTH,widthInInch);
 	}
 	,setHeight: function(heightInInch) {
-		heightInInch = Math.max(state_Custom.MIN_WIDTH,heightInInch);
-		this.height = heightInInch * this.surface.inToPx;
+		this.height = Math.max(state_Custom.MIN_WIDTH,heightInInch);
 	}
 	,destroy: function() {
 		this.container.innerHTML = "";
@@ -202,8 +202,8 @@ state_Custom.prototype = {
 	,setSize: function() {
 		this.setWidth(App.checkFloat(this.iptWidth,state_Custom.MIN_WIDTH));
 		this.setHeight(App.checkFloat(this.iptHeight,state_Custom.MIN_WIDTH));
-		this.rectangle.width = this.width;
-		this.rectangle.height = this.height;
+		this.rectangle.width = this.width * this.surface.inToPx;
+		this.rectangle.height = this.height * this.surface.inToPx;
 		this.surface.draw();
 	}
 	,createButtons: function() {
@@ -220,14 +220,14 @@ state_Custom.prototype = {
 		this.container.appendChild(lblWidth);
 		this.iptWidth = window.document.createElement("input");
 		this.iptWidth.type = "text";
-		this.iptWidth.value = this.width / this.surface.inToPx;
+		this.iptWidth.value = this.width;
 		this.container.appendChild(this.iptWidth);
 		var lblHeight = window.document.createElement("label");
 		lblHeight.innerHTML = "Height:";
 		this.container.appendChild(lblHeight);
 		this.iptHeight = window.document.createElement("input");
 		this.iptHeight.type = "text";
-		this.iptHeight.value = this.height / this.surface.inToPx;
+		this.iptHeight.value = this.height;
 		this.container.appendChild(this.iptHeight);
 		var btnSet = window.document.createElement("button");
 		btnSet.innerHTML = "Set size";
