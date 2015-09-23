@@ -81,6 +81,7 @@ Stand.prototype = {
 		wElt = this.supportPart.width;
 		hElt = this.thickness * this.surface.inToPx;
 		this.supportCarving = new element_Rectangle(0,0,false,null,wElt,hElt,1,"grey","grey");
+		this.surface.removeAll();
 		this.surface.add(this.centralPart);
 		this.surface.add(this.dogbone);
 		this.surface.add(this.supportPart);
@@ -100,6 +101,14 @@ Stand.prototype = {
 		this.supportCarving.x = xLeft;
 		this.supportCarving.y = this.supportPart.y + this.supportPart.height - 0.25 * inToPx - this.supportPart.height;
 		this.surface.draw();
+	}
+	,setBoardThickness: function(boardThickness) {
+		this.thickness = Math.min(0,boardThickness);
+		this.createElements();
+	}
+	,setBitWidth: function(bitWidth) {
+		this.bitWidth = Math.min(0,bitWidth);
+		this.createElements();
 	}
 	,getGCode: function(bitLength,feedrate) {
 		return "";
@@ -302,6 +311,7 @@ var state_Final = function(surface,width,height) {
 state_Final.__interfaces__ = [state_IState];
 state_Final.prototype = {
 	create: function() {
+		this.stand.createElements();
 		this.createButtons();
 	}
 	,destroy: function() {
@@ -314,7 +324,13 @@ state_Final.prototype = {
 	,displayMenu: function() {
 		App.switchState(new state_Menu(this.surface));
 	}
-	,replaceElements: function() {
+	,setParameters: function() {
+		var bitWidth = App.checkFloat(this.iptBitWidth,0);
+		var thickness = App.checkFloat(this.iptThickness,0);
+		App.checkFloat(this.iptBitLength,0);
+		App.checkFloat(this.iptFeedrate,0);
+		this.stand.setBoardThickness(bitWidth);
+		this.stand.setBoardThickness(thickness);
 	}
 	,generateCode: function() {
 		console.log("Code generation");
@@ -333,6 +349,7 @@ state_Final.prototype = {
 		this.container.appendChild(App.createLabel("Bit width:"));
 		this.iptBitWidth = App.createInputText(state_Final.BIT_WIDTH);
 		this.container.appendChild(this.iptBitWidth);
+		this.container.appendChild(App.createButton("Set parameters",$bind(this,this.setParameters)));
 		this.container.appendChild(App.createButton("Generate",$bind(this,this.generateCode)));
 	}
 };

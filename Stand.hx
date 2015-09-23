@@ -34,7 +34,7 @@ class Stand
         createElements();
     }
 
-    private function createElements():Void
+    public function createElements():Void
     {
         var wElt:Float = width * surface.inToPx;
         var hElt:Float = height * surface.inToPx;
@@ -53,6 +53,7 @@ class Stand
         supportCarving = new Rectangle(0, 0, false, null, wElt, hElt, 1,
                 "grey", "grey");
 
+        surface.removeAll();
         surface.add(centralPart);
         surface.add(dogbone);
         surface.add(supportPart);
@@ -82,6 +83,18 @@ class Stand
              1 / 4 * inToPx - supportPart.height;
 
         surface.draw();
+    }
+
+    public function setBoardThickness(boardThickness:Float):Void
+    {
+        thickness = Math.min(0, boardThickness);
+        createElements();
+    }
+
+    public function setBitWidth(bitWidth:Float):Void
+    {
+        this.bitWidth = Math.min(0, bitWidth);
+        createElements();
     }
 
 

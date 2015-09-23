@@ -28,12 +28,13 @@ class Final implements IState
         trace("Final state.");
         container = Browser.document.getElementById("finalization");
         this.surface = surface;
-        stand = new Stand(surface, width, height, BIT_WIDTH, THICKNESS);
         //NOTE: do not write any thing in new
+        stand = new Stand(surface, width, height, BIT_WIDTH, THICKNESS);
     }
 
     public function create():Void
     {
+        stand.createElements();
         createButtons();
     }
 
@@ -53,8 +54,15 @@ class Final implements IState
         App.switchState(new Menu(surface));
     }
 
-    private function replaceElements():Void
+    private function setParameters():Void
     {
+        var bitWidth:Float = App.checkFloat(iptBitWidth, 0);
+        var thickness:Float = App.checkFloat(iptThickness, 0);
+        App.checkFloat(iptBitLength, 0);
+        App.checkFloat(iptFeedrate, 0);
+
+        stand.setBoardThickness(bitWidth);
+        stand.setBoardThickness(thickness);
     }
 
     private function generateCode():Void
@@ -82,6 +90,7 @@ class Final implements IState
         iptBitWidth = App.createInputText(cast BIT_WIDTH);
         container.appendChild(iptBitWidth);
 
+        container.appendChild(App.createButton("Set parameters", setParameters));
         container.appendChild(App.createButton("Generate", generateCode));
     }
 }
