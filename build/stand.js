@@ -1,7 +1,6 @@
 (function (console) { "use strict";
 var App = function() {
 	this.document = window.document;
-	this.stand = { width : 10, height : 10, holes : []};
 	this.surface = new Surface(this.document.getElementById("canvas"));
 	App.switchState(new state_Menu(this.surface));
 };
@@ -59,6 +58,52 @@ HxOverrides.remove = function(a,obj) {
 var Main = function() { };
 Main.main = function() {
 	new App();
+};
+var Stand = function(surface,width,height,bitWidth,thickness) {
+	this.surface = surface;
+	this.width = width;
+	this.height = height;
+	this.bitWidth = bitWidth;
+	this.thickness = thickness;
+	this.createElements();
+};
+Stand.prototype = {
+	createElements: function() {
+		var wElt = this.width * this.surface.inToPx;
+		var hElt = this.height * this.surface.inToPx;
+		this.centralPart = new element_Rectangle(0,0,false,null,wElt,hElt);
+		wElt = (this.width - 2 * Stand.MARGIN_CENTRAL) * this.surface.inToPx;
+		hElt = this.thickness * this.surface.inToPx;
+		this.dogbone = new element_Dogbone(0,0,false,null,wElt,hElt,this.bitWidth / 2);
+		wElt = this.dogbone.width;
+		hElt = Stand.HEIGHT_SUPPORT * this.surface.inToPx;
+		this.supportPart = new element_Rectangle(0,0,false,null,wElt,hElt);
+		wElt = this.supportPart.width;
+		hElt = this.thickness * this.surface.inToPx;
+		this.supportCarving = new element_Rectangle(0,0,false,null,wElt,hElt,1,"grey","grey");
+		this.surface.add(this.centralPart);
+		this.surface.add(this.dogbone);
+		this.surface.add(this.supportPart);
+		this.surface.add(this.supportCarving);
+		this.placeElements();
+	}
+	,placeElements: function() {
+		var inToPx = this.surface.inToPx;
+		var cHeight = this.surface.canvas.height;
+		var xLeft = this.bitWidth * 2 * inToPx;
+		this.centralPart.x = xLeft;
+		this.centralPart.y = cHeight - this.bitWidth * inToPx - this.centralPart.height;
+		this.dogbone.x = Stand.MARGIN_CENTRAL * inToPx;
+		this.dogbone.y = this.centralPart.y + this.centralPart.height - 0.875 * inToPx - this.dogbone.height;
+		this.supportPart.x = xLeft;
+		this.supportPart.y = this.centralPart.y - 2.5 * this.bitWidth - this.supportPart.height;
+		this.supportCarving.x = xLeft;
+		this.supportCarving.y = this.supportPart.y + this.supportPart.height - 0.25 * inToPx - this.supportPart.height;
+		this.surface.draw();
+	}
+	,getGCode: function(bitLength,feedrate) {
+		return "";
+	}
 };
 var Surface = function(canvas) {
 	this.mousePressing = false;
@@ -196,7 +241,7 @@ var state_IState = function() { };
 var state_Custom = function(surface,widthInInch,heightInInch) {
 	if(heightInInch == null) heightInInch = 0;
 	if(widthInInch == null) widthInInch = 0;
-	console.log("Final custom.");
+	console.log("Custom state");
 	this.container = window.document.getElementById("finalization");
 	this.surface = surface;
 	this.setWidth(widthInInch);
@@ -210,7 +255,7 @@ state_Custom.prototype = {
 		var hR = this.height * this.surface.inToPx;
 		this.rectangle = new element_Rectangle(5,5,false,null,wR,hR);
 		this.surface.add(this.rectangle);
-		var elt = new element_Dogbone(100,100,false,null,100,10,20);
+		var elt = new element_Dogbone(100,100,false,null,100,10,10);
 		this.surface.add(elt);
 	}
 	,setWidth: function(widthInInch) {
@@ -252,6 +297,7 @@ var state_Final = function(surface,width,height) {
 	console.log("Final state.");
 	this.container = window.document.getElementById("finalization");
 	this.surface = surface;
+	this.stand = new Stand(surface,width,height,state_Final.BIT_WIDTH,state_Final.THICKNESS);
 };
 state_Final.__interfaces__ = [state_IState];
 state_Final.prototype = {
@@ -268,10 +314,26 @@ state_Final.prototype = {
 	,displayMenu: function() {
 		App.switchState(new state_Menu(this.surface));
 	}
-	,generateStand: function(width,height) {
+	,replaceElements: function() {
+	}
+	,generateCode: function() {
+		console.log("Code generation");
 	}
 	,createButtons: function() {
 		this.container.appendChild(App.createButton("Customize",$bind(this,this.displayCustom)));
+		this.container.appendChild(App.createLabel("Feedrate:"));
+		this.iptFeedrate = App.createInputText(state_Final.FEEDRATE);
+		this.container.appendChild(this.iptFeedrate);
+		this.container.appendChild(App.createLabel("Board thickness:"));
+		this.iptThickness = App.createInputText(state_Final.THICKNESS);
+		this.container.appendChild(this.iptThickness);
+		this.container.appendChild(App.createLabel("Bit length:"));
+		this.iptBitLength = App.createInputText(state_Final.BIT_LENGTH);
+		this.container.appendChild(this.iptBitLength);
+		this.container.appendChild(App.createLabel("Bit width:"));
+		this.iptBitWidth = App.createInputText(state_Final.BIT_WIDTH);
+		this.container.appendChild(this.iptBitWidth);
+		this.container.appendChild(App.createButton("Generate",$bind(this,this.generateCode)));
 	}
 };
 var state_Menu = function(surface) {
@@ -303,7 +365,14 @@ function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id
 if(Array.prototype.indexOf) HxOverrides.indexOf = function(a,o,i) {
 	return Array.prototype.indexOf.call(a,o,i);
 };
+Stand.MARGIN_CENTRAL = 1;
+Stand.HEIGHT_SUPPORT = 3;
+Stand.CARVING_DEPTH = 0.03125;
 state_Custom.MIN_WIDTH = 3;
 state_Custom.MIN_HEIGHT = 3;
+state_Final.FEEDRATE = 120;
+state_Final.THICKNESS = 1;
+state_Final.BIT_LENGTH = 1;
+state_Final.BIT_WIDTH = 1;
 Main.main();
 })(typeof console != "undefined" ? console : {log:function(){}});

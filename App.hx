@@ -7,20 +7,20 @@ import js.Browser;
 
 import state.IState;
 
-typedef Hole = Int;   //TODO: CHANGE THAT!
-typedef Stand = { width:Float, height:Float, holes:Array<Hole> };
+// typedef Hole = Int;   //TODO: CHANGE THAT!
+// typedef Stand = { width:Float, height:Float, holes:Array<Hole> };
 
 class App
 {
     private var document:Document = Browser.document;
-    private var stand:Stand;
+    // private var stand:Stand;
     private var surface:Surface;
 
     public static var currentState:IState;
 
     public function new()
     {
-        stand = { width : 10, height : 10, holes : new Array<Hole>() };
+        // stand = { width : 10, height : 10, holes : new Array<Hole>() };
         surface = new Surface(cast document.getElementById("canvas"));
         switchState(new state.Menu(surface));
         // setButtons();

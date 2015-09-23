@@ -23,7 +23,7 @@ class Custom implements IState
 
     public function new(surface:Surface, widthInInch:Float=0, heightInInch:Float=0)
     {
-        trace("Final custom.");
+        trace("Custom state");
         container = Browser.document.getElementById("finalization");
         this.surface = surface;
         setWidth(widthInInch);
@@ -41,7 +41,7 @@ class Custom implements IState
         surface.add(rectangle);
 
         //TODO: remove test
-        var elt:element.Dogbone = new element.Dogbone(100, 100, false, null, 100, 10, 20);
+        var elt:element.Dogbone = new element.Dogbone(100, 100, false, null, 100, 10, 10);
         surface.add(elt);
     }
 
