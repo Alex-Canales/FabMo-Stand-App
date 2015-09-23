@@ -7,7 +7,7 @@ import element.Dogbone;
 /* Generate the stand (graphical elements and the GCode) */
 class Stand
 {
-    public static var MARGIN_CENTRAL(default, null):Float = 1;
+    public static var MARGIN_CENTRAL(default, null):Float = 1/2;
     public static var HEIGHT_SUPPORT(default, null):Float = 3;
     public static var CARVING_DEPTH(default, null):Float = 1/32;
 
@@ -36,13 +36,14 @@ class Stand
 
     public function createElements():Void
     {
+        var radiusBone:Float = bitWidth * surface.inToPx / 2;
         var wElt:Float = width * surface.inToPx;
         var hElt:Float = height * surface.inToPx;
         centralPart = new Rectangle(0, 0, false, null, wElt, hElt);
 
         wElt = (width - 2 * MARGIN_CENTRAL) * surface.inToPx;
         hElt = thickness * surface.inToPx;
-        dogbone = new Dogbone(0, 0, false, null, wElt, hElt, bitWidth / 2);
+        dogbone = new Dogbone(0, 0, false, null, wElt, hElt, radiusBone);
 
         wElt = dogbone.width;
         hElt = HEIGHT_SUPPORT * surface.inToPx;
@@ -67,20 +68,21 @@ class Stand
     {
         var inToPx:Float = surface.inToPx;
         var cHeight:Float = surface.canvas.height;
-        var xLeft:Float = bitWidth * 2 * inToPx;
+        var margin:Float = bitWidth * 2 * inToPx;
+        var xLeft:Float = margin;
         centralPart.x = xLeft;
-        centralPart.y = cHeight - bitWidth * inToPx - centralPart.height;
+        centralPart.y = cHeight - margin - centralPart.height;
 
-        dogbone.x = MARGIN_CENTRAL * inToPx;
+        dogbone.x = centralPart.x + MARGIN_CENTRAL * inToPx;
         dogbone.y = centralPart.y + centralPart.height - 7 / 8 * inToPx -
             dogbone.height;
 
         supportPart.x = xLeft;
-        supportPart.y = centralPart.y - 2.5 * bitWidth - supportPart.height;
+        supportPart.y = centralPart.y - margin - supportPart.height;
 
         supportCarving.x = xLeft;
-        supportCarving.y = supportPart.y + supportPart.height -
-             1 / 4 * inToPx - supportPart.height;
+        supportCarving.y = supportPart.y + supportPart.height - 0.5 * inToPx -
+            supportCarving.height;
 
         surface.draw();
     }

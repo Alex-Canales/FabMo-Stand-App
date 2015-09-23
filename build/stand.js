@@ -69,12 +69,13 @@ var Stand = function(surface,width,height,bitWidth,thickness) {
 };
 Stand.prototype = {
 	createElements: function() {
+		var radiusBone = this.bitWidth * this.surface.inToPx / 2;
 		var wElt = this.width * this.surface.inToPx;
 		var hElt = this.height * this.surface.inToPx;
 		this.centralPart = new element_Rectangle(0,0,false,null,wElt,hElt);
 		wElt = (this.width - 2 * Stand.MARGIN_CENTRAL) * this.surface.inToPx;
 		hElt = this.thickness * this.surface.inToPx;
-		this.dogbone = new element_Dogbone(0,0,false,null,wElt,hElt,this.bitWidth / 2);
+		this.dogbone = new element_Dogbone(0,0,false,null,wElt,hElt,radiusBone);
 		wElt = this.dogbone.width;
 		hElt = Stand.HEIGHT_SUPPORT * this.surface.inToPx;
 		this.supportPart = new element_Rectangle(0,0,false,null,wElt,hElt);
@@ -91,15 +92,16 @@ Stand.prototype = {
 	,placeElements: function() {
 		var inToPx = this.surface.inToPx;
 		var cHeight = this.surface.canvas.height;
-		var xLeft = this.bitWidth * 2 * inToPx;
+		var margin = this.bitWidth * 2 * inToPx;
+		var xLeft = margin;
 		this.centralPart.x = xLeft;
-		this.centralPart.y = cHeight - this.bitWidth * inToPx - this.centralPart.height;
-		this.dogbone.x = Stand.MARGIN_CENTRAL * inToPx;
+		this.centralPart.y = cHeight - margin - this.centralPart.height;
+		this.dogbone.x = this.centralPart.x + Stand.MARGIN_CENTRAL * inToPx;
 		this.dogbone.y = this.centralPart.y + this.centralPart.height - 0.875 * inToPx - this.dogbone.height;
 		this.supportPart.x = xLeft;
-		this.supportPart.y = this.centralPart.y - 2.5 * this.bitWidth - this.supportPart.height;
+		this.supportPart.y = this.centralPart.y - margin - this.supportPart.height;
 		this.supportCarving.x = xLeft;
-		this.supportCarving.y = this.supportPart.y + this.supportPart.height - 0.25 * inToPx - this.supportPart.height;
+		this.supportCarving.y = this.supportPart.y + this.supportPart.height - 0.5 * inToPx - this.supportCarving.height;
 		this.surface.draw();
 	}
 	,setBoardThickness: function(boardThickness) {
@@ -383,7 +385,7 @@ function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id
 if(Array.prototype.indexOf) HxOverrides.indexOf = function(a,o,i) {
 	return Array.prototype.indexOf.call(a,o,i);
 };
-Stand.MARGIN_CENTRAL = 1;
+Stand.MARGIN_CENTRAL = 0.5;
 Stand.HEIGHT_SUPPORT = 3;
 Stand.CARVING_DEPTH = 0.03125;
 state_Custom.MIN_WIDTH = 3;
