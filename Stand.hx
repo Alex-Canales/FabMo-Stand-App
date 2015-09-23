@@ -4,6 +4,8 @@ import element.IElement;
 import element.Rectangle;
 import element.Dogbone;
 
+typedef Point = { x : Float, y : Float };
+
 /* Generate the stand (graphical elements and the GCode) */
 class Stand
 {
@@ -99,6 +101,106 @@ class Stand
         createElements();
     }
 
+    private function getRealCoordinate(element:IElement):Point
+    {
+        var x:Float = element.x;
+        var y:Float = surface.canvas.width - (element.y + element.height);
+        return { x : x / surface.inToPx, y : y / surface.inToPx };
+    }
+
+    // Write a G0 or G1 command, without \n at the end
+    private function g(type:Int, f:Float, ?x:Float, ?y:Float, ?z:Float):String
+    {
+        if(type != 0 || type != 1)
+            return "";
+
+        var code:String = "G" + type;
+        if(x != null)
+            code += " X" + x;
+        if(y != null)
+            code += " Y" + y;
+        if(z != null)
+            code += " Z" + z;
+        code += " F" + f;
+        return code;
+    }
+
+    // Returns the GCode for cutting this part
+    // The bit will insert in the first point then follow the path until
+    // the last point and leave. Continue until cut at the chosen depth.
+    // Assumes the bit is above the board and not inside
+    //  depth is negative (cutting into 3 inches => depth = -3)
+    private function cutPath(path:Array<Point>, depth:Float, bitLength:Float,
+            feedrate:Float):String
+    {
+        if(path.length == 0 || depth == 0)
+            return "";
+
+        var codes:Array<String> = new Array<String>();
+        var currentDepth:Float = 0;
+        var iEnd:Int = path.length - 1;
+
+        codes.push(g(0, feedrate, path[0].x, path[0].y));
+        while(currentDepth > depth)
+        {
+            currentDepth = Math.max(currentDepth - bitLength, depth);
+
+            codes.push(g(1, feedrate, null, null, currentDepth));
+            for(i in 1...path.length)
+            {
+                codes.push(g(1, feedrate, path[i].x, path[i].y));
+            }
+
+            //If a closed path, no need to rise the bit each time
+            if(path[0].x != path[iEnd].x || path[0].y != path[iEnd].y)
+                codes.push(g(1, feedrate, null, null, 2));
+        }
+
+        //If a closed path, it is needed to go rise the bit
+        if(path[0].x == path[iEnd].x && path[0].y == path[iEnd].y)
+            codes.push(g(1, feedrate, null, null, 2));
+
+        return codes.join('\n');
+    }
+
+    private function getPathCentral():Array<Points>
+    {
+        var halfW:Float = bitWidth / 2;
+        var origin:Point = getRealCoordinate(centralPart);
+        var xLeft:Float = origin.x - halfW;
+        var xRight:Float = origin.x + centralPart.width + halfW;
+        var yDown:Float = origin.y - halfW;
+        var yUp:Float = origin.y + centralPart.height + halfW;
+
+        var path:Array<Point> = new Array<Point>();
+        path.push({ x : xLeft, y : yDown });
+        path.push({ x : xRight, y : yDown });
+        path.push({ x : xRight, y : yUp });
+        path.push({ x : xLeft, y : yUp });
+        path.push({ x : xLeft, y : yDown });
+
+        return path;
+    }
+
+    private function getPathDogbone():Array<Points>
+    {
+        var halfW:Float = bitWidth / 2;
+        var origin:Point = getRealCoordinate(dogbone);
+        var xLeft:Float = origin.x + halfW;
+        var xRight:Float = origin.x + centralPart.width - halfW;
+        var y:Float = origin.y + halfW;
+
+        var path:Array<Point> = new Array<Point>();
+        path.push({ x : xLeft, y : y });
+        path.push({ x : xLeft, y : y + halfW });
+        path.push({ x : xLeft, y : y - halfW });
+        path.push({ x : xLeft, y : y });
+        path.push({ x : xRight, y : y });
+        path.push({ x : xRight, y : y + halfW });
+        path.push({ x : xRight, y : y - halfW });
+
+        return path;
+    }
 
     public function getGCode(bitLength:Float, feedrate:Float):String
     {
