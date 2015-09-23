@@ -37,24 +37,20 @@ class Custom implements IState
 
         var wR:Float = width * surface.inToPx;
         var hR:Float = height * surface.inToPx;
-        rectangle = new element.Rectangle(5, 5, false, null, wR, hR);
+        var x:Float = 5;
+        var y:Float = surface.canvas.height - hR - 5;
+        rectangle = new element.Rectangle(x, y, false, null, wR, hR);
         surface.add(rectangle);
-
-        //TODO: remove test
-        var elt:element.Dogbone = new element.Dogbone(100, 100, false, null, 100, 10, 10);
-        surface.add(elt);
     }
 
     private function setWidth(widthInInch):Void
     {
         width = Math.max(MIN_WIDTH, widthInInch);
-        // width = widthInInch * surface.inToPx;
     }
 
     private function setHeight(heightInInch):Void
     {
         height = Math.max(MIN_WIDTH, heightInInch);
-        // height = heightInInch * surface.inToPx;
     }
 
     public function destroy():Void
@@ -80,6 +76,7 @@ class Custom implements IState
 
         rectangle.width = width * surface.inToPx;
         rectangle.height = height * surface.inToPx;
+        rectangle.y = surface.canvas.height - rectangle.height - 5;
         surface.draw();
     }
 

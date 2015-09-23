@@ -262,10 +262,10 @@ state_Custom.prototype = {
 		this.createButtons();
 		var wR = this.width * this.surface.inToPx;
 		var hR = this.height * this.surface.inToPx;
-		this.rectangle = new element_Rectangle(5,5,false,null,wR,hR);
+		var x = 5;
+		var y = this.surface.canvas.height - hR - 5;
+		this.rectangle = new element_Rectangle(x,y,false,null,wR,hR);
 		this.surface.add(this.rectangle);
-		var elt = new element_Dogbone(100,100,false,null,100,10,10);
-		this.surface.add(elt);
 	}
 	,setWidth: function(widthInInch) {
 		this.width = Math.max(state_Custom.MIN_WIDTH,widthInInch);
@@ -288,6 +288,7 @@ state_Custom.prototype = {
 		this.setHeight(App.checkFloat(this.iptHeight,state_Custom.MIN_WIDTH));
 		this.rectangle.width = this.width * this.surface.inToPx;
 		this.rectangle.height = this.height * this.surface.inToPx;
+		this.rectangle.y = this.surface.canvas.height - this.rectangle.height - 5;
 		this.surface.draw();
 	}
 	,createButtons: function() {
