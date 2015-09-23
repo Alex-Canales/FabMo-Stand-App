@@ -105,11 +105,11 @@ Stand.prototype = {
 		this.surface.draw();
 	}
 	,setBoardThickness: function(boardThickness) {
-		this.thickness = Math.min(0,boardThickness);
+		this.thickness = Math.max(0,boardThickness);
 		this.createElements();
 	}
 	,setBitWidth: function(bitWidth) {
-		this.bitWidth = Math.min(0,bitWidth);
+		this.bitWidth = Math.max(0,bitWidth);
 		this.createElements();
 	}
 	,getGCode: function(bitLength,feedrate) {
@@ -128,7 +128,6 @@ var Surface = function(canvas) {
 };
 Surface.prototype = {
 	add: function(element) {
-		console.log("Adding");
 		this.elements.push(element);
 		this.draw();
 	}
@@ -141,8 +140,6 @@ Surface.prototype = {
 		this.draw();
 	}
 	,draw: function() {
-		console.log("Drawing surface");
-		console.log(this.elements);
 		var context = this.canvas.getContext("2d",null);
 		this.clear(context);
 		var _g = 0;
@@ -194,7 +191,6 @@ element_Dogbone.prototype = {
 		var xRightBone = this.x + this.width - this.radius;
 		var yTopBone = this.y;
 		var yBottomBone = this.y + this.height;
-		console.log("Drawing dogbone");
 		context.beginPath();
 		context.rect(this.x,this.y,this.width,this.height);
 		context.fillStyle = "0x000000";
@@ -236,7 +232,6 @@ var element_Rectangle = function(x,y,draggable,callback,width,height,lineWidth,l
 element_Rectangle.__interfaces__ = [element_IElement];
 element_Rectangle.prototype = {
 	draw: function(context) {
-		console.log("Drawing rectangle");
 		context.beginPath();
 		context.rect(this.x,this.y,this.width,this.height);
 		if(this.fillColor != null) {
@@ -252,7 +247,6 @@ var state_IState = function() { };
 var state_Custom = function(surface,widthInInch,heightInInch) {
 	if(heightInInch == null) heightInInch = 0;
 	if(widthInInch == null) widthInInch = 0;
-	console.log("Custom state");
 	this.container = window.document.getElementById("finalization");
 	this.surface = surface;
 	this.setWidth(widthInInch);
@@ -306,7 +300,6 @@ state_Custom.prototype = {
 	}
 };
 var state_Final = function(surface,width,height) {
-	console.log("Final state.");
 	this.container = window.document.getElementById("finalization");
 	this.surface = surface;
 	this.stand = new Stand(surface,width,height,state_Final.BIT_WIDTH,state_Final.THICKNESS);
@@ -332,7 +325,7 @@ state_Final.prototype = {
 		var thickness = App.checkFloat(this.iptThickness,0);
 		App.checkFloat(this.iptBitLength,0);
 		App.checkFloat(this.iptFeedrate,0);
-		this.stand.setBoardThickness(bitWidth);
+		this.stand.setBitWidth(bitWidth);
 		this.stand.setBoardThickness(thickness);
 	}
 	,generateCode: function() {
@@ -357,7 +350,6 @@ state_Final.prototype = {
 	}
 };
 var state_Menu = function(surface) {
-	console.log("Menu state.");
 	this.container = window.document.getElementById("menu");
 	this.surface = surface;
 };
@@ -391,8 +383,8 @@ Stand.CARVING_DEPTH = 0.03125;
 state_Custom.MIN_WIDTH = 3;
 state_Custom.MIN_HEIGHT = 3;
 state_Final.FEEDRATE = 120;
-state_Final.THICKNESS = 1;
+state_Final.THICKNESS = 0.25;
 state_Final.BIT_LENGTH = 1;
-state_Final.BIT_WIDTH = 1;
+state_Final.BIT_WIDTH = 0.25;
 Main.main();
 })(typeof console != "undefined" ? console : {log:function(){}});

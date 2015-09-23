@@ -29,7 +29,6 @@ class Surface
 
     public function add(element:IElement):Void
     {
-        trace("Adding");
         elements.push(element);
         draw();
     }
@@ -48,8 +47,6 @@ class Surface
 
     public function draw():Void
     {
-        trace("Drawing surface");
-        trace(elements);
         var context:CanvasRenderingContext2D = canvas.getContext2d();
         clear(context);
         for(elt in elements)

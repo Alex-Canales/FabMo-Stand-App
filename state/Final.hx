@@ -11,10 +11,10 @@ class Final implements IState
     public var surface:Surface;
 
     //Default values
-    public static var FEEDRATE(default, null):Int = 120;
-    public static var THICKNESS(default, null):Int = 1;
-    public static var BIT_LENGTH(default, null):Int = 1;
-    public static var BIT_WIDTH(default, null):Int = 1;
+    public static var FEEDRATE(default, null):Float = 120;
+    public static var THICKNESS(default, null):Float = 1/4;
+    public static var BIT_LENGTH(default, null):Float = 1;
+    public static var BIT_WIDTH(default, null):Float = 1/4;
 
     private var stand:Stand;
 
@@ -25,7 +25,6 @@ class Final implements IState
 
     public function new(surface:Surface, width:Float, height:Float)
     {
-        trace("Final state.");
         container = Browser.document.getElementById("finalization");
         this.surface = surface;
         //NOTE: do not write any thing in new
@@ -61,7 +60,7 @@ class Final implements IState
         App.checkFloat(iptBitLength, 0);
         App.checkFloat(iptFeedrate, 0);
 
-        stand.setBoardThickness(bitWidth);
+        stand.setBitWidth(bitWidth);
         stand.setBoardThickness(thickness);
     }
 

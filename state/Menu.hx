@@ -14,7 +14,6 @@ class Menu implements IState
 
     public function new(surface:Surface)
     {
-        trace("Menu state.");
         container = Browser.document.getElementById("menu");
         this.surface = surface;
         //NOTE: do not write any thing in new

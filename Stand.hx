@@ -89,13 +89,13 @@ class Stand
 
     public function setBoardThickness(boardThickness:Float):Void
     {
-        thickness = Math.min(0, boardThickness);
+        thickness = Math.max(0, boardThickness);
         createElements();
     }
 
     public function setBitWidth(bitWidth:Float):Void
     {
-        this.bitWidth = Math.min(0, bitWidth);
+        this.bitWidth = Math.max(0, bitWidth);
         createElements();
     }
 

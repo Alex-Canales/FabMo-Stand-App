@@ -32,7 +32,6 @@ class Dogbone implements IElement
         var yTopBone:Float = y;
         var yBottomBone:Float = y + height;
 
-        trace("Drawing dogbone");
         context.beginPath();
 
         //Rectangle hole

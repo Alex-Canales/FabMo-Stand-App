@@ -31,7 +31,6 @@ class Rectangle implements IElement
 
     public function draw(context:CanvasRenderingContext2D):Void
     {
-        trace("Drawing rectangle");
         context.beginPath();
         context.rect(x, y, width, height);
         if(fillColor !=  null)

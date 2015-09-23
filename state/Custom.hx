@@ -23,7 +23,6 @@ class Custom implements IState
 
     public function new(surface:Surface, widthInInch:Float=0, heightInInch:Float=0)
     {
-        trace("Custom state");
         container = Browser.document.getElementById("finalization");
         this.surface = surface;
         setWidth(widthInInch);
