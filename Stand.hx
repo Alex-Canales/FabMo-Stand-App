@@ -3,8 +3,7 @@ package;
 import element.IElement;
 import element.Rectangle;
 import element.Dogbone;
-
-typedef Point = { x : Float, y : Float };
+import App.Point;
 
 /* Generate the stand (graphical elements and the GCode) */
 class Stand
@@ -163,14 +162,14 @@ class Stand
         return codes.join('\n');
     }
 
-    private function getPathCentral():Array<Points>
+    private function getPathArroundRectangle(element:IElement):Array<Point>
     {
         var halfW:Float = bitWidth / 2;
-        var origin:Point = getRealCoordinate(centralPart);
+        var origin:Point = getRealCoordinate(element);
         var xLeft:Float = origin.x - halfW;
-        var xRight:Float = origin.x + centralPart.width + halfW;
+        var xRight:Float = origin.x + element.width + halfW;
         var yDown:Float = origin.y - halfW;
-        var yUp:Float = origin.y + centralPart.height + halfW;
+        var yUp:Float = origin.y + element.height + halfW;
 
         var path:Array<Point> = new Array<Point>();
         path.push({ x : xLeft, y : yDown });
@@ -182,7 +181,13 @@ class Stand
         return path;
     }
 
-    private function getPathDogbone():Array<Points>
+    private function getPathCentral():Array<Point>
+    {
+
+        return getPathArroundRectangle(centralPart);
+    }
+
+    private function getPathDogbone():Array<Point>
     {
         var halfW:Float = bitWidth / 2;
         var origin:Point = getRealCoordinate(dogbone);
@@ -190,6 +195,8 @@ class Stand
         var xRight:Float = origin.x + centralPart.width - halfW;
         var y:Float = origin.y + halfW;
 
+        //TODO: not good, forgot for the thickness can be different from the
+        // bit width
         var path:Array<Point> = new Array<Point>();
         path.push({ x : xLeft, y : y });
         path.push({ x : xLeft, y : y + halfW });
@@ -200,6 +207,11 @@ class Stand
         path.push({ x : xRight, y : y - halfW });
 
         return path;
+    }
+
+    private function getPathSupportPart():Array<Point>
+    {
+        return getPathArroundRectangle(supportPart);
     }
 
     public function getGCode(bitLength:Float, feedrate:Float):String

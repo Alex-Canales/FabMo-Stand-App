@@ -112,6 +112,77 @@ Stand.prototype = {
 		this.bitWidth = Math.max(0,bitWidth);
 		this.createElements();
 	}
+	,getRealCoordinate: function(element) {
+		var x = element.x;
+		var y = this.surface.canvas.width - (element.y + element.height);
+		return { x : x / this.surface.inToPx, y : y / this.surface.inToPx};
+	}
+	,g: function(type,f,x,y,z) {
+		if(type != 0 || type != 1) return "";
+		var code = "G" + type;
+		if(x != null) code += " X" + x;
+		if(y != null) code += " Y" + y;
+		if(z != null) code += " Z" + z;
+		code += " F" + f;
+		return code;
+	}
+	,cutPath: function(path,depth,bitLength,feedrate) {
+		if(path.length == 0 || depth == 0) return "";
+		var codes = [];
+		var currentDepth = 0;
+		var iEnd = path.length - 1;
+		codes.push(this.g(0,feedrate,path[0].x,path[0].y));
+		while(currentDepth > depth) {
+			currentDepth = Math.max(currentDepth - bitLength,depth);
+			codes.push(this.g(1,feedrate,null,null,currentDepth));
+			var _g1 = 1;
+			var _g = path.length;
+			while(_g1 < _g) {
+				var i = _g1++;
+				codes.push(this.g(1,feedrate,path[i].x,path[i].y));
+			}
+			if(path[0].x != path[iEnd].x || path[0].y != path[iEnd].y) codes.push(this.g(1,feedrate,null,null,2));
+		}
+		if(path[0].x == path[iEnd].x && path[0].y == path[iEnd].y) codes.push(this.g(1,feedrate,null,null,2));
+		return codes.join("\n");
+	}
+	,getPathArroundRectangle: function(element) {
+		var halfW = this.bitWidth / 2;
+		var origin = this.getRealCoordinate(element);
+		var xLeft = origin.x - halfW;
+		var xRight = origin.x + element.width + halfW;
+		var yDown = origin.y - halfW;
+		var yUp = origin.y + element.height + halfW;
+		var path = [];
+		path.push({ x : xLeft, y : yDown});
+		path.push({ x : xRight, y : yDown});
+		path.push({ x : xRight, y : yUp});
+		path.push({ x : xLeft, y : yUp});
+		path.push({ x : xLeft, y : yDown});
+		return path;
+	}
+	,getPathCentral: function() {
+		return this.getPathArroundRectangle(this.centralPart);
+	}
+	,getPathDogbone: function() {
+		var halfW = this.bitWidth / 2;
+		var origin = this.getRealCoordinate(this.dogbone);
+		var xLeft = origin.x + halfW;
+		var xRight = origin.x + this.centralPart.width - halfW;
+		var y = origin.y + halfW;
+		var path = [];
+		path.push({ x : xLeft, y : y});
+		path.push({ x : xLeft, y : y + halfW});
+		path.push({ x : xLeft, y : y - halfW});
+		path.push({ x : xLeft, y : y});
+		path.push({ x : xRight, y : y});
+		path.push({ x : xRight, y : y + halfW});
+		path.push({ x : xRight, y : y - halfW});
+		return path;
+	}
+	,getPathSupportPart: function() {
+		return this.getPathArroundRectangle(this.supportPart);
+	}
 	,getGCode: function(bitLength,feedrate) {
 		return "";
 	}

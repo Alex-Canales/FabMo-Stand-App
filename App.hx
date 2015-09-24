@@ -7,8 +7,7 @@ import js.Browser;
 
 import state.IState;
 
-// typedef Hole = Int;   //TODO: CHANGE THAT!
-// typedef Stand = { width:Float, height:Float, holes:Array<Hole> };
+typedef Point = { x:Float, y:Float };
 
 class App
 {

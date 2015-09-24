@@ -5,8 +5,6 @@ import js.html.CanvasRenderingContext2D;
 import js.html.ClientRect;
 import element.IElement;
 
-typedef Point = { x:Float, y:Float };
-
 class Surface
 {
     public var inToPx:Int = 10;
@@ -60,7 +58,7 @@ class Surface
         context.clearRect(0, 0, context.canvas.width, context.canvas.height);
     }
 
-    private function getPosOnCanvas(clientX:Float, clientY:Float):Point
+    private function getPosOnCanvas(clientX:Float, clientY:Float):App.Point
     {
         var rect:ClientRect = canvas.getBoundingClientRect();
         return { x : clientX - rect.left, y : clientY - rect.top };
