@@ -5,6 +5,8 @@ import element.Rectangle;
 import element.Dogbone;
 import App.Point;
 
+typedef Coordinate = { x : Float, y : Float, width : Float, height : Float };
+
 /* Generate the stand (graphical elements and the GCode) */
 class Stand
 {
@@ -100,11 +102,16 @@ class Stand
         createElements();
     }
 
-    private function getRealCoordinate(element:IElement):Point
+    private function getRealCoordinate(element:IElement):Coordinate
     {
         var x:Float = element.x;
         var y:Float = surface.canvas.width - (element.y + element.height);
-        return { x : x / surface.inToPx, y : y / surface.inToPx };
+        return {
+            x : x / surface.inToPx,
+            y : y / surface.inToPx,
+            width : element.width / surface.inToPx,
+            height : element.height / surface.inToPx
+        };
     }
 
     // Write a G0 or G1 command, without \n at the end
@@ -165,11 +172,11 @@ class Stand
     private function getPathArroundRectangle(element:IElement):Array<Point>
     {
         var halfW:Float = bitWidth / 2;
-        var origin:Point = getRealCoordinate(element);
-        var xLeft:Float = origin.x - halfW;
-        var xRight:Float = origin.x + element.width / surface.inToPx + halfW;
-        var yDown:Float = origin.y - halfW;
-        var yUp:Float = origin.y + element.height / surface.inToPx + halfW;
+        var coordinate:Coordinate = getRealCoordinate(element);
+        var xLeft:Float = coordinate.x - halfW;
+        var xRight:Float = coordinate.x + element.width / surface.inToPx + halfW;
+        var yDown:Float = coordinate.y - halfW;
+        var yUp:Float = coordinate.y + element.height / surface.inToPx + halfW;
 
         var path:Array<Point> = new Array<Point>();
         path.push({ x : xLeft, y : yDown });
@@ -228,16 +235,14 @@ class Stand
     private function getPathDogbone():Array<Point>
     {
         var halfW:Float = bitWidth / 2;
-        var origin:Point = getRealCoordinate(dogbone);
-        var yTopBone:Float = origin.y + height;
-        var yDownBone:Float = origin.y;
-        var xLeft:Float = origin.x + halfW;
-        var xRight:Float = origin.x + dogbone.width - halfW;
-        var realWidth:Float = dogbone.width / surface.inToPx;
-        var realHeight:Float = dogbone.height / surface.inToPx;
+        var coordinate:Coordinate = getRealCoordinate(dogbone);
+        var yTopBone:Float = coordinate.y + coordinate.height;
+        var yDownBone:Float = coordinate.y;
+        var xLeft:Float = coordinate.x + halfW;
+        var xRight:Float = coordinate.x + coordinate.width - halfW;
 
-        var path:Array<Point> = getPathInsideRectangle(origin.x, origin.y,
-                realWidth, realHeight, bitWidth);
+        var path:Array<Point> = getPathInsideRectangle(coordinate.x, coordinate.y,
+                coordinate.width, coordinate.height, bitWidth);
 
         //Push the left at the begin because a whole path cut the material
         // from each point to an other. Therefore if pushed at the end,

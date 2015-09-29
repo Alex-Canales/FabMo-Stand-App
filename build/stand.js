@@ -115,7 +115,7 @@ Stand.prototype = {
 	,getRealCoordinate: function(element) {
 		var x = element.x;
 		var y = this.surface.canvas.width - (element.y + element.height);
-		return { x : x / this.surface.inToPx, y : y / this.surface.inToPx};
+		return { x : x / this.surface.inToPx, y : y / this.surface.inToPx, width : element.width / this.surface.inToPx, height : element.height / this.surface.inToPx};
 	}
 	,g: function(type,f,x,y,z) {
 		if(type != 0 && type != 1) return "";
@@ -148,11 +148,11 @@ Stand.prototype = {
 	}
 	,getPathArroundRectangle: function(element) {
 		var halfW = this.bitWidth / 2;
-		var origin = this.getRealCoordinate(element);
-		var xLeft = origin.x - halfW;
-		var xRight = origin.x + element.width / this.surface.inToPx + halfW;
-		var yDown = origin.y - halfW;
-		var yUp = origin.y + element.height / this.surface.inToPx + halfW;
+		var coordinate = this.getRealCoordinate(element);
+		var xLeft = coordinate.x - halfW;
+		var xRight = coordinate.x + element.width / this.surface.inToPx + halfW;
+		var yDown = coordinate.y - halfW;
+		var yUp = coordinate.y + element.height / this.surface.inToPx + halfW;
 		var path = [];
 		path.push({ x : xLeft, y : yDown});
 		path.push({ x : xRight, y : yDown});
@@ -193,14 +193,12 @@ Stand.prototype = {
 	}
 	,getPathDogbone: function() {
 		var halfW = this.bitWidth / 2;
-		var origin = this.getRealCoordinate(this.dogbone);
-		var yTopBone = origin.y + this.height;
-		var yDownBone = origin.y;
-		var xLeft = origin.x + halfW;
-		var xRight = origin.x + this.dogbone.width - halfW;
-		var realWidth = this.dogbone.width / this.surface.inToPx;
-		var realHeight = this.dogbone.height / this.surface.inToPx;
-		var path = this.getPathInsideRectangle(origin.x,origin.y,realWidth,realHeight,this.bitWidth);
+		var coordinate = this.getRealCoordinate(this.dogbone);
+		var yTopBone = coordinate.y + coordinate.height;
+		var yDownBone = coordinate.y;
+		var xLeft = coordinate.x + halfW;
+		var xRight = coordinate.x + coordinate.width - halfW;
+		var path = this.getPathInsideRectangle(coordinate.x,coordinate.y,coordinate.width,coordinate.height,this.bitWidth);
 		path.splice(0,0,{ x : xLeft, y : yTopBone});
 		path.splice(0,0,{ x : xLeft, y : yDownBone});
 		path.push({ x : xRight, y : yTopBone});
