@@ -150,9 +150,9 @@ Stand.prototype = {
 		var halfW = this.bitWidth / 2;
 		var coordinate = this.getRealCoordinate(element);
 		var xLeft = coordinate.x - halfW;
-		var xRight = coordinate.x + element.width / this.surface.inToPx + halfW;
+		var xRight = coordinate.x + coordinate.width + halfW;
 		var yDown = coordinate.y - halfW;
-		var yUp = coordinate.y + element.height / this.surface.inToPx + halfW;
+		var yUp = coordinate.y + coordinate.height + halfW;
 		var path = [];
 		path.push({ x : xLeft, y : yDown});
 		path.push({ x : xRight, y : yDown});
@@ -208,11 +208,23 @@ Stand.prototype = {
 	,getPathSupportPart: function() {
 		return this.getPathArroundRectangle(this.supportPart);
 	}
+	,getPathSupportCarving: function() {
+		var c = this.getRealCoordinate(this.supportCarving);
+		return this.getPathInsideRectangle(c.x,c.y,c.width,c.height,this.bitWidth);
+	}
 	,getGCode: function(bitLength,feedrate) {
+		var carvDepth = this.thickness / 5;
 		var pathDogbone = this.getPathDogbone();
+		var pathCentral = this.getPathCentral();
+		var pathSupportPart = this.getPathSupportPart();
+		var pathSupportCarving = this.getPathSupportCarving();
 		var code = "G20 G90 \n";
 		code += this.g(0,feedrate,null,null,2) + "\n";
 		code += this.cutPath(pathDogbone,-this.thickness,bitLength,feedrate) + "\n";
+		code += this.cutPath(pathCentral,-this.thickness,bitLength,feedrate) + "\n";
+		code += this.cutPath(pathSupportPart,-this.thickness,bitLength,feedrate) + "\n";
+		code += this.cutPath(pathSupportCarving,-carvDepth,bitLength,feedrate);
+		code += "\n";
 		code += "M30";
 		return code;
 	}

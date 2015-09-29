@@ -174,9 +174,9 @@ class Stand
         var halfW:Float = bitWidth / 2;
         var coordinate:Coordinate = getRealCoordinate(element);
         var xLeft:Float = coordinate.x - halfW;
-        var xRight:Float = coordinate.x + element.width / surface.inToPx + halfW;
+        var xRight:Float = coordinate.x + coordinate.width + halfW;
         var yDown:Float = coordinate.y - halfW;
-        var yUp:Float = coordinate.y + element.height / surface.inToPx + halfW;
+        var yUp:Float = coordinate.y + coordinate.height + halfW;
 
         var path:Array<Point> = new Array<Point>();
         path.push({ x : xLeft, y : yDown });
@@ -260,13 +260,26 @@ class Stand
         return getPathArroundRectangle(supportPart);
     }
 
+    private function getPathSupportCarving():Array<Point>
+    {
+        var c:Coordinate = getRealCoordinate(supportCarving);
+        return getPathInsideRectangle(c.x, c.y, c.width, c.height, bitWidth);
+    }
+
     public function getGCode(bitLength:Float, feedrate:Float):String
     {
-        var pathDogbone = getPathDogbone();
-        var code = "G20 G90 \n";
+        var carvDepth:Float = thickness / 5;
+        var pathDogbone:Array<Point> = getPathDogbone();
+        var pathCentral:Array<Point> = getPathCentral();
+        var pathSupportPart:Array<Point> = getPathSupportPart();
+        var pathSupportCarving:Array<Point> = getPathSupportCarving();
+        var code:String = "G20 G90 \n";
         code += g(0, feedrate, null, null, 2) + "\n";
         code += cutPath(pathDogbone, -thickness, bitLength, feedrate) + "\n";
-        // code += g(0, feedrate, null, null, 2) + "\n";
+        code += cutPath(pathCentral, -thickness, bitLength, feedrate) + "\n";
+        code += cutPath(pathSupportPart, -thickness, bitLength, feedrate) + "\n";
+        code += cutPath(pathSupportCarving, -carvDepth, bitLength, feedrate);
+        code +=  "\n";
 
         code += "M30";
         return code;
