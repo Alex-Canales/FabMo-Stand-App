@@ -118,7 +118,7 @@ Stand.prototype = {
 		return { x : x / this.surface.inToPx, y : y / this.surface.inToPx};
 	}
 	,g: function(type,f,x,y,z) {
-		if(type != 0 || type != 1) return "";
+		if(type != 0 && type != 1) return "";
 		var code = "G" + type;
 		if(x != null) code += " X" + x;
 		if(y != null) code += " Y" + y;
@@ -150,9 +150,9 @@ Stand.prototype = {
 		var halfW = this.bitWidth / 2;
 		var origin = this.getRealCoordinate(element);
 		var xLeft = origin.x - halfW;
-		var xRight = origin.x + element.width + halfW;
+		var xRight = origin.x + element.width / this.surface.inToPx + halfW;
 		var yDown = origin.y - halfW;
-		var yUp = origin.y + element.height + halfW;
+		var yUp = origin.y + element.height / this.surface.inToPx + halfW;
 		var path = [];
 		path.push({ x : xLeft, y : yDown});
 		path.push({ x : xRight, y : yDown});
@@ -198,7 +198,9 @@ Stand.prototype = {
 		var yDownBone = origin.y;
 		var xLeft = origin.x + halfW;
 		var xRight = origin.x + this.dogbone.width - halfW;
-		var path = this.getPathInsideRectangle(origin.x,origin.y,this.dogbone.width,this.dogbone.height,this.bitWidth);
+		var realWidth = this.dogbone.width / this.surface.inToPx;
+		var realHeight = this.dogbone.height / this.surface.inToPx;
+		var path = this.getPathInsideRectangle(origin.x,origin.y,realWidth,realHeight,this.bitWidth);
 		path.splice(0,0,{ x : xLeft, y : yTopBone});
 		path.splice(0,0,{ x : xLeft, y : yDownBone});
 		path.push({ x : xRight, y : yTopBone});
@@ -209,7 +211,12 @@ Stand.prototype = {
 		return this.getPathArroundRectangle(this.supportPart);
 	}
 	,getGCode: function(bitLength,feedrate) {
-		return "";
+		var pathDogbone = this.getPathDogbone();
+		var code = "G20 G90 \n";
+		code += this.g(0,feedrate,null,null,2) + "\n";
+		code += this.cutPath(pathDogbone,-this.thickness,bitLength,feedrate) + "\n";
+		code += "M30";
+		return code;
 	}
 };
 var Surface = function(canvas) {
@@ -425,6 +432,9 @@ state_Final.prototype = {
 		this.stand.setBoardThickness(thickness);
 	}
 	,generateCode: function() {
+		var bitLength = App.checkFloat(this.iptBitLength);
+		var feedrate = App.checkFloat(this.iptFeedrate);
+		console.log(this.stand.getGCode(bitLength,feedrate));
 		console.log("Code generation");
 	}
 	,createButtons: function() {

@@ -110,7 +110,7 @@ class Stand
     // Write a G0 or G1 command, without \n at the end
     private function g(type:Int, f:Float, ?x:Float, ?y:Float, ?z:Float):String
     {
-        if(type != 0 || type != 1)
+        if(type != 0 && type != 1)
             return "";
 
         var code:String = "G" + type;
@@ -167,9 +167,9 @@ class Stand
         var halfW:Float = bitWidth / 2;
         var origin:Point = getRealCoordinate(element);
         var xLeft:Float = origin.x - halfW;
-        var xRight:Float = origin.x + element.width + halfW;
+        var xRight:Float = origin.x + element.width / surface.inToPx + halfW;
         var yDown:Float = origin.y - halfW;
-        var yUp:Float = origin.y + element.height + halfW;
+        var yUp:Float = origin.y + element.height / surface.inToPx + halfW;
 
         var path:Array<Point> = new Array<Point>();
         path.push({ x : xLeft, y : yDown });
@@ -233,12 +233,15 @@ class Stand
         var yDownBone:Float = origin.y;
         var xLeft:Float = origin.x + halfW;
         var xRight:Float = origin.x + dogbone.width - halfW;
+        var realWidth:Float = dogbone.width / surface.inToPx;
+        var realHeight:Float = dogbone.height / surface.inToPx;
 
         var path:Array<Point> = getPathInsideRectangle(origin.x, origin.y,
-                dogbone.width, dogbone.height, bitWidth);
+                realWidth, realHeight, bitWidth);
 
         //Push the left at the begin because a whole path cut the material
-        // from each point to an other.
+        // from each point to an other. Therefore if pushed at the end,
+        // undesirable cuts will be done.
         path.insert(0, { x : xLeft, y : yTopBone });
         path.insert(0, { x : xLeft, y : yDownBone });
         path.push({ x : xRight, y : yTopBone });
@@ -254,6 +257,13 @@ class Stand
 
     public function getGCode(bitLength:Float, feedrate:Float):String
     {
-        return "";
+        var pathDogbone = getPathDogbone();
+        var code = "G20 G90 \n";
+        code += g(0, feedrate, null, null, 2) + "\n";
+        code += cutPath(pathDogbone, -thickness, bitLength, feedrate) + "\n";
+        // code += g(0, feedrate, null, null, 2) + "\n";
+
+        code += "M30";
+        return code;
     }
 }

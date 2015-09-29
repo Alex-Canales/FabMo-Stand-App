@@ -66,6 +66,9 @@ class Final implements IState
 
     private function generateCode():Void
     {
+        var bitLength:Float = App.checkFloat(iptBitLength);
+        var feedrate:Float = App.checkFloat(iptFeedrate);
+        trace(stand.getGCode(bitLength, feedrate));
         trace("Code generation");
     }
 
