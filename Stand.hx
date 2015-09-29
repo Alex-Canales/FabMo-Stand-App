@@ -181,9 +181,47 @@ class Stand
         return path;
     }
 
+    private function getPathInsideRectangle(x:Float, y:Float, width:Float,
+            height:Float, bitWidth:Float):Array<Point>
+    {
+        var path:Array<Point> = new Array<Point>();
+        var halfW:Float = bitWidth / 2;
+        var xMin:Float = x + halfW;
+        var xMax:Float = x + width - halfW;
+        var currentY:Float = y + halfW;
+        var keepGoing:Bool = true;
+
+        if(width <= bitWidth)
+        {
+            xMin = x + width / 2;
+            xMax = xMin;
+        }
+
+        if(height <= bitWidth)
+        {
+            path.push({ x : xMin, y : y + height / 2 });
+            if(xMin != xMax)
+                path.push({ x : xMax, y : y + height / 2 });
+            return path;
+        }
+
+        while(keepGoing)
+        {
+            if(currentY + halfW >= y + height)
+            {
+                currentY = y + height - halfW;
+                keepGoing = false;
+            }
+            path.push({ x : xMin, y : currentY });
+            path.push({ x : xMax, y : currentY });
+            currentY += bitWidth;
+        }
+
+        return path;
+    }
+
     private function getPathCentral():Array<Point>
     {
-
         return getPathArroundRectangle(centralPart);
     }
 
@@ -191,20 +229,20 @@ class Stand
     {
         var halfW:Float = bitWidth / 2;
         var origin:Point = getRealCoordinate(dogbone);
+        var yTopBone:Float = origin.y + height;
+        var yDownBone:Float = origin.y;
         var xLeft:Float = origin.x + halfW;
-        var xRight:Float = origin.x + centralPart.width - halfW;
-        var y:Float = origin.y + halfW;
+        var xRight:Float = origin.x + dogbone.width - halfW;
 
-        //TODO: not good, forgot for the thickness can be different from the
-        // bit width
-        var path:Array<Point> = new Array<Point>();
-        path.push({ x : xLeft, y : y });
-        path.push({ x : xLeft, y : y + halfW });
-        path.push({ x : xLeft, y : y - halfW });
-        path.push({ x : xLeft, y : y });
-        path.push({ x : xRight, y : y });
-        path.push({ x : xRight, y : y + halfW });
-        path.push({ x : xRight, y : y - halfW });
+        var path:Array<Point> = getPathInsideRectangle(origin.x, origin.y,
+                dogbone.width, dogbone.height, bitWidth);
+
+        //Push the left at the begin because a whole path cut the material
+        // from each point to an other.
+        path.insert(0, { x : xLeft, y : yTopBone });
+        path.insert(0, { x : xLeft, y : yDownBone });
+        path.push({ x : xRight, y : yTopBone });
+        path.push({ x : xRight, y : yDownBone });
 
         return path;
     }

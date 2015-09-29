@@ -161,23 +161,48 @@ Stand.prototype = {
 		path.push({ x : xLeft, y : yDown});
 		return path;
 	}
+	,getPathInsideRectangle: function(x,y,width,height,bitWidth) {
+		var path = [];
+		var halfW = bitWidth / 2;
+		var xMin = x + halfW;
+		var xMax = x + width - halfW;
+		var currentY = y + halfW;
+		var keepGoing = true;
+		if(width <= bitWidth) {
+			xMin = x + width / 2;
+			xMax = xMin;
+		}
+		if(height <= bitWidth) {
+			path.push({ x : xMin, y : y + height / 2});
+			if(xMin != xMax) path.push({ x : xMax, y : y + height / 2});
+			return path;
+		}
+		while(keepGoing) {
+			if(currentY + halfW >= y + height) {
+				currentY = y + height - halfW;
+				keepGoing = false;
+			}
+			path.push({ x : xMin, y : currentY});
+			path.push({ x : xMax, y : currentY});
+			currentY += bitWidth;
+		}
+		return path;
+	}
 	,getPathCentral: function() {
 		return this.getPathArroundRectangle(this.centralPart);
 	}
 	,getPathDogbone: function() {
 		var halfW = this.bitWidth / 2;
 		var origin = this.getRealCoordinate(this.dogbone);
+		var yTopBone = origin.y + this.height;
+		var yDownBone = origin.y;
 		var xLeft = origin.x + halfW;
-		var xRight = origin.x + this.centralPart.width - halfW;
-		var y = origin.y + halfW;
-		var path = [];
-		path.push({ x : xLeft, y : y});
-		path.push({ x : xLeft, y : y + halfW});
-		path.push({ x : xLeft, y : y - halfW});
-		path.push({ x : xLeft, y : y});
-		path.push({ x : xRight, y : y});
-		path.push({ x : xRight, y : y + halfW});
-		path.push({ x : xRight, y : y - halfW});
+		var xRight = origin.x + this.dogbone.width - halfW;
+		var path = this.getPathInsideRectangle(origin.x,origin.y,this.dogbone.width,this.dogbone.height,this.bitWidth);
+		path.splice(0,0,{ x : xLeft, y : yTopBone});
+		path.splice(0,0,{ x : xLeft, y : yDownBone});
+		path.push({ x : xRight, y : yTopBone});
+		path.push({ x : xRight, y : yDownBone});
 		return path;
 	}
 	,getPathSupportPart: function() {
