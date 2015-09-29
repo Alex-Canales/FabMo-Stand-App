@@ -152,7 +152,7 @@ class Stand
             currentDepth = Math.max(currentDepth - bitLength, depth);
 
             codes.push(g(1, feedrate, null, null, currentDepth));
-            for(i in 1...path.length)
+            for(i in 0...path.length)
             {
                 codes.push(g(1, feedrate, path[i].x, path[i].y));
             }
@@ -247,10 +247,16 @@ class Stand
         //Push the left at the begin because a whole path cut the material
         // from each point to an other. Therefore if pushed at the end,
         // undesirable cuts will be done.
+        path.insert(0, { x : xLeft, y : (yTopBone + yDownBone) / 2 });
         path.insert(0, { x : xLeft, y : yTopBone });
         path.insert(0, { x : xLeft, y : yDownBone });
+        path.insert(0, { x : xLeft, y : (yTopBone + yDownBone) / 2 });
+        path.push({ x : xRight, y : (yTopBone + yDownBone) / 2 });
         path.push({ x : xRight, y : yTopBone });
         path.push({ x : xRight, y : yDownBone });
+        path.push({ x : xRight, y : (yTopBone + yDownBone) / 2 });
+        path.push({ x : xLeft, y : (yTopBone + yDownBone) / 2 });
+        //The last one is there to do a close path (the bit will not go up)
 
         return path;
     }
@@ -273,7 +279,7 @@ class Stand
         var pathCentral:Array<Point> = getPathCentral();
         var pathSupportPart:Array<Point> = getPathSupportPart();
         var pathSupportCarving:Array<Point> = getPathSupportCarving();
-        var code:String = "G20 G90 \n";
+        var code:String = "G20 G90\n";
         code += g(0, feedrate, null, null, 2) + "\n";
         code += cutPath(pathDogbone, -thickness, bitLength, feedrate) + "\n";
         code += cutPath(pathCentral, -thickness, bitLength, feedrate) + "\n";

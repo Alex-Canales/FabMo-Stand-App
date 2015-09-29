@@ -135,7 +135,7 @@ Stand.prototype = {
 		while(currentDepth > depth) {
 			currentDepth = Math.max(currentDepth - bitLength,depth);
 			codes.push(this.g(1,feedrate,null,null,currentDepth));
-			var _g1 = 1;
+			var _g1 = 0;
 			var _g = path.length;
 			while(_g1 < _g) {
 				var i = _g1++;
@@ -199,10 +199,15 @@ Stand.prototype = {
 		var xLeft = coordinate.x + halfW;
 		var xRight = coordinate.x + coordinate.width - halfW;
 		var path = this.getPathInsideRectangle(coordinate.x,coordinate.y,coordinate.width,coordinate.height,this.bitWidth);
+		path.splice(0,0,{ x : xLeft, y : (yTopBone + yDownBone) / 2});
 		path.splice(0,0,{ x : xLeft, y : yTopBone});
 		path.splice(0,0,{ x : xLeft, y : yDownBone});
+		path.splice(0,0,{ x : xLeft, y : (yTopBone + yDownBone) / 2});
+		path.push({ x : xRight, y : (yTopBone + yDownBone) / 2});
 		path.push({ x : xRight, y : yTopBone});
 		path.push({ x : xRight, y : yDownBone});
+		path.push({ x : xRight, y : (yTopBone + yDownBone) / 2});
+		path.push({ x : xLeft, y : (yTopBone + yDownBone) / 2});
 		return path;
 	}
 	,getPathSupportPart: function() {
@@ -218,7 +223,7 @@ Stand.prototype = {
 		var pathCentral = this.getPathCentral();
 		var pathSupportPart = this.getPathSupportPart();
 		var pathSupportCarving = this.getPathSupportCarving();
-		var code = "G20 G90 \n";
+		var code = "G20 G90\n";
 		code += this.g(0,feedrate,null,null,2) + "\n";
 		code += this.cutPath(pathDogbone,-this.thickness,bitLength,feedrate) + "\n";
 		code += this.cutPath(pathCentral,-this.thickness,bitLength,feedrate) + "\n";
@@ -444,8 +449,8 @@ state_Final.prototype = {
 	,generateCode: function() {
 		var bitLength = App.checkFloat(this.iptBitLength);
 		var feedrate = App.checkFloat(this.iptFeedrate);
-		console.log(this.stand.getGCode(bitLength,feedrate));
-		console.log("Code generation");
+		var code = this.stand.getGCode(bitLength,feedrate);
+		Job.submitJob(code,{ filename : "stand.ngc"});
 	}
 	,createButtons: function() {
 		this.container.appendChild(App.createButton("Customize",$bind(this,this.displayCustom)));

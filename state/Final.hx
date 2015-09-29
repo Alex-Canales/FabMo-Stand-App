@@ -68,8 +68,8 @@ class Final implements IState
     {
         var bitLength:Float = App.checkFloat(iptBitLength);
         var feedrate:Float = App.checkFloat(iptFeedrate);
-        trace(stand.getGCode(bitLength, feedrate));
-        trace("Code generation");
+        var code:String = stand.getGCode(bitLength, feedrate);
+        Job.submitJob(code, { filename : "stand.ngc" });
     }
 
     private function createButtons():Void
