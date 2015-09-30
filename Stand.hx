@@ -3,6 +3,7 @@ package;
 import element.IElement;
 import element.Rectangle;
 import element.Dogbone;
+import element.Text;
 import App.Point;
 
 typedef Coordinate = { x : Float, y : Float, width : Float, height : Float };
@@ -12,7 +13,7 @@ class Stand
 {
     public static var MARGIN_CENTRAL(default, null):Float = 1/2;
     public static var HEIGHT_SUPPORT(default, null):Float = 3;
-    public static var CARVING_DEPTH(default, null):Float = 1/32;
+    // public static var CARVING_DEPTH(default, null):Float = 1/32;
 
     private var width:Float;
     private var height:Float;
@@ -23,6 +24,11 @@ class Stand
     private var dogbone:Dogbone;
     private var supportPart:Rectangle;
     private var supportCarving:Rectangle;
+
+    private var rectangleSize:Rectangle;
+    private var horizontalSize:Text;
+    private var verticalSize:Text;
+
 
     private var surface:Surface;
 
@@ -35,6 +41,31 @@ class Stand
         this.bitWidth = bitWidth;
         this.thickness = thickness;
         createElements();
+    }
+
+    public function updateTotalSize():Void
+    {
+        var cSupport:Coordinate = getRealCoordinate(supportPart);
+        var cCentral:Coordinate = getRealCoordinate(centralPart);
+        var margin = bitWidth * 2;
+        var realWidth:Float = cCentral.width + margin + bitWidth;
+        var realHeight:Float = cCentral.height + cSupport.height + 2 * margin;
+        realHeight += bitWidth;
+        var pixelWidth = realWidth * surface.inToPx;
+        var pixelHeight = realHeight * surface.inToPx;
+
+        rectangleSize.x = 0;
+        rectangleSize.y = surface.canvas.height - pixelHeight;
+        rectangleSize.width = pixelWidth;
+        rectangleSize.height = pixelHeight;
+
+        horizontalSize.x = rectangleSize.x + rectangleSize.width / 2 - 5;
+        horizontalSize.y = rectangleSize.y - 5;
+        horizontalSize.text = Std.string(realWidth);
+
+        verticalSize.x = rectangleSize.x + rectangleSize.width + 5;
+        verticalSize.y = rectangleSize.y + rectangleSize.height / 2 - 5;
+        verticalSize.text = Std.string(realHeight);
     }
 
     public function createElements():Void
@@ -57,11 +88,18 @@ class Stand
         supportCarving = new Rectangle(0, 0, false, null, wElt, hElt, 1,
                 "grey", "grey");
 
+        rectangleSize = new Rectangle(0, 0, false, null, 1, 1, "red");
+        horizontalSize = new Text(0, 0, false, null, "0");
+        verticalSize = new Text(0, 0, false, null, "0");
+
         surface.removeAll();
         surface.add(centralPart);
         surface.add(dogbone);
         surface.add(supportPart);
         surface.add(supportCarving);
+        surface.add(rectangleSize);
+        surface.add(horizontalSize);
+        surface.add(verticalSize);
 
         placeElements();
     }
@@ -86,6 +124,8 @@ class Stand
         supportCarving.x = xLeft;
         supportCarving.y = supportPart.y + supportPart.height - 0.5 * inToPx -
             supportCarving.height;
+
+        updateTotalSize();
 
         surface.draw();
     }

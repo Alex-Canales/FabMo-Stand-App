@@ -1,6 +1,6 @@
 package element;
 
-import js.html.CanvasRenderingContext2D
+import js.html.CanvasRenderingContext2D;
 
 class Text implements IElement
 {
@@ -9,6 +9,8 @@ class Text implements IElement
     public var draggable:Bool;
     public var callback:Dynamic;  //callback function
     public var text:String;
+    public var width:Float;
+    public var height:Float;
 
     public function new(x, y, draggable, callback, text)
     {

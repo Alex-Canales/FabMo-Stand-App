@@ -73,7 +73,27 @@ var Stand = function(surface,width,height,bitWidth,thickness) {
 };
 Stand.__name__ = true;
 Stand.prototype = {
-	createElements: function() {
+	updateTotalSize: function() {
+		var cSupport = this.getRealCoordinate(this.supportPart);
+		var cCentral = this.getRealCoordinate(this.centralPart);
+		var margin = this.bitWidth * 2;
+		var realWidth = cCentral.width + margin + this.bitWidth;
+		var realHeight = cCentral.height + cSupport.height + 2 * margin;
+		realHeight += this.bitWidth;
+		var pixelWidth = realWidth * this.surface.inToPx;
+		var pixelHeight = realHeight * this.surface.inToPx;
+		this.rectangleSize.x = 0;
+		this.rectangleSize.y = this.surface.canvas.height - pixelHeight;
+		this.rectangleSize.width = pixelWidth;
+		this.rectangleSize.height = pixelHeight;
+		this.horizontalSize.x = this.rectangleSize.x + this.rectangleSize.width / 2 - 5;
+		this.horizontalSize.y = this.rectangleSize.y - 5;
+		if(realWidth == null) this.horizontalSize.text = "null"; else this.horizontalSize.text = "" + realWidth;
+		this.verticalSize.x = this.rectangleSize.x + this.rectangleSize.width + 5;
+		this.verticalSize.y = this.rectangleSize.y + this.rectangleSize.height / 2 - 5;
+		if(realHeight == null) this.verticalSize.text = "null"; else this.verticalSize.text = "" + realHeight;
+	}
+	,createElements: function() {
 		var radiusBone = this.bitWidth * this.surface.inToPx / 2;
 		var wElt = this.width * this.surface.inToPx;
 		var hElt = this.height * this.surface.inToPx;
@@ -87,11 +107,17 @@ Stand.prototype = {
 		wElt = this.supportPart.width;
 		hElt = this.thickness * this.surface.inToPx;
 		this.supportCarving = new element_Rectangle(0,0,false,null,wElt,hElt,1,"grey","grey");
+		this.rectangleSize = new element_Rectangle(0,0,false,null,1,1,null,"red");
+		this.horizontalSize = new element_Text(0,0,false,null,"0");
+		this.verticalSize = new element_Text(0,0,false,null,"0");
 		this.surface.removeAll();
 		this.surface.add(this.centralPart);
 		this.surface.add(this.dogbone);
 		this.surface.add(this.supportPart);
 		this.surface.add(this.supportCarving);
+		this.surface.add(this.rectangleSize);
+		this.surface.add(this.horizontalSize);
+		this.surface.add(this.verticalSize);
 		this.placeElements();
 	}
 	,placeElements: function() {
@@ -107,6 +133,7 @@ Stand.prototype = {
 		this.supportPart.y = this.centralPart.y - margin - this.supportPart.height;
 		this.supportCarving.x = xLeft;
 		this.supportCarving.y = this.supportPart.y + this.supportPart.height - 0.5 * inToPx - this.supportCarving.height;
+		this.updateTotalSize();
 		this.surface.draw();
 	}
 	,setBoardThickness: function(boardThickness) {
@@ -386,6 +413,20 @@ element_Rectangle.prototype = {
 		context.stroke();
 	}
 };
+var element_Text = function(x,y,draggable,callback,text) {
+	this.x = x;
+	this.y = y;
+	this.draggable = draggable;
+	this.callback = callback;
+	this.text = text;
+};
+element_Text.__name__ = true;
+element_Text.__interfaces__ = [element_IElement];
+element_Text.prototype = {
+	draw: function(context) {
+		context.fillText(this.text,this.x,this.y);
+	}
+};
 var js_Boot = function() { };
 js_Boot.__name__ = true;
 js_Boot.__string_rec = function(o,s) {
@@ -563,7 +604,6 @@ String.__name__ = true;
 Array.__name__ = true;
 Stand.MARGIN_CENTRAL = 0.5;
 Stand.HEIGHT_SUPPORT = 3;
-Stand.CARVING_DEPTH = 0.03125;
 state_Custom.MIN_WIDTH = 3;
 state_Custom.MIN_HEIGHT = 3;
 state_Final.FEEDRATE = 120;
