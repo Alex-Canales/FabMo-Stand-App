@@ -197,6 +197,7 @@ class Stand
         var xMax:Float = x + width - halfW;
         var currentY:Float = y + halfW;
         var keepGoing:Bool = true;
+        var goRight:Bool = true;
 
         if(width <= bitWidth)
         {
@@ -219,8 +220,17 @@ class Stand
                 currentY = y + height - halfW;
                 keepGoing = false;
             }
-            path.push({ x : xMin, y : currentY });
-            path.push({ x : xMax, y : currentY });
+            if(goRight)
+            {
+                path.push({ x : xMin, y : currentY });
+                path.push({ x : xMax, y : currentY });
+            }
+            else
+            {
+                path.push({ x : xMax, y : currentY });
+                path.push({ x : xMin, y : currentY });
+            }
+            goRight = !goRight;
             currentY += bitWidth;
         }
 

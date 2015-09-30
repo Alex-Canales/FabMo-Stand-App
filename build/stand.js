@@ -168,6 +168,7 @@ Stand.prototype = {
 		var xMax = x + width - halfW;
 		var currentY = y + halfW;
 		var keepGoing = true;
+		var goRight = true;
 		if(width <= bitWidth) {
 			xMin = x + width / 2;
 			xMax = xMin;
@@ -182,8 +183,14 @@ Stand.prototype = {
 				currentY = y + height - halfW;
 				keepGoing = false;
 			}
-			path.push({ x : xMin, y : currentY});
-			path.push({ x : xMax, y : currentY});
+			if(goRight) {
+				path.push({ x : xMin, y : currentY});
+				path.push({ x : xMax, y : currentY});
+			} else {
+				path.push({ x : xMax, y : currentY});
+				path.push({ x : xMin, y : currentY});
+			}
+			goRight = !goRight;
 			currentY += bitWidth;
 		}
 		return path;
