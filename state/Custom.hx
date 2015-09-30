@@ -23,7 +23,8 @@ class Custom implements IState
 
     public function new(surface:Surface, widthInInch:Float=0, heightInInch:Float=0)
     {
-        container = Browser.document.getElementById("finalization");
+        container = Browser.document.getElementById("custom");
+        container.style.display = "inline-block";
         this.surface = surface;
         setWidth(widthInInch);
         setHeight(heightInInch);
@@ -54,13 +55,8 @@ class Custom implements IState
 
     public function destroy():Void
     {
-        container.innerHTML = "";
+        container.style.display = "none";
         surface.removeAll();
-    }
-
-    private function displayMenu():Void
-    {
-        App.switchState(new Menu(surface));
     }
 
     private function displayFinal():Void
@@ -81,18 +77,11 @@ class Custom implements IState
 
     private function createButtons():Void
     {
-        container.appendChild(App.createButton("Menu", displayMenu));
-        container.appendChild(App.createButton("Next", displayFinal));
-        container.appendChild(App.createLabel("Width:"));
+        Browser.document.getElementById("go-finalize").onclick = displayFinal;
 
-        iptWidth = App.createInputText(cast width);
-        container.appendChild(iptWidth);
+        iptWidth = cast Browser.document.getElementById("width");
+        iptHeight = cast Browser.document.getElementById("height");
 
-        container.appendChild(App.createLabel("Height:"));
-
-        iptHeight = App.createInputText(cast height);
-        container.appendChild(iptHeight);
-
-        container.appendChild(App.createButton("Set size", setSize));
+        Browser.document.getElementById("setSize").onclick = setSize;
     }
 }

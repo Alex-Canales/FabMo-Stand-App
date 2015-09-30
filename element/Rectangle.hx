@@ -41,7 +41,5 @@ class Rectangle implements IElement
         context.lineWidth = lineWidth;
         context.strokeStyle = lineColor;
         context.stroke();
-
-        context.restore();
     }
 }

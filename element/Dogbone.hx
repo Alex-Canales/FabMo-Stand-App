@@ -69,7 +69,5 @@ class Dogbone implements IElement
         context.fillStyle = "#000000";
         context.fill();
         context.stroke();
-
-        context.restore();
     }
 }

@@ -26,6 +26,7 @@ class Final implements IState
     public function new(surface:Surface, width:Float, height:Float)
     {
         container = Browser.document.getElementById("finalization");
+        container.style.display = "inline-block";
         this.surface = surface;
         //NOTE: do not write any thing in new
         stand = new Stand(surface, width, height, BIT_WIDTH, THICKNESS);
@@ -39,18 +40,13 @@ class Final implements IState
 
     public function destroy():Void
     {
-        container.innerHTML = "";
+        container.style.display = "none";
         surface.removeAll();
     }
 
     private function displayCustom():Void
     {
         App.switchState(new Custom(surface));
-    }
-
-    private function displayMenu():Void
-    {
-        App.switchState(new Menu(surface));
     }
 
     private function setParameters():Void
@@ -74,25 +70,17 @@ class Final implements IState
 
     private function createButtons():Void
     {
-        container.appendChild(App.createButton("Customize", displayCustom));
+        Browser.document.getElementById("go-customize").onclick = displayCustom;
+        iptFeedrate = cast Browser.document.getElementById("feedrate");
+        iptFeedrate.value = Std.string(FEEDRATE);
+        iptThickness = cast Browser.document.getElementById("thickness");
+        iptThickness .value = Std.string(THICKNESS);
+        iptBitLength = cast Browser.document.getElementById("bitLength");
+        iptBitLength .value = Std.string(BIT_LENGTH);
+        iptBitWidth = cast Browser.document.getElementById("bitWidth");
+        iptBitWidth .value = Std.string(BIT_WIDTH);
 
-        container.appendChild(App.createLabel("Feedrate:"));
-        iptFeedrate = App.createInputText(cast FEEDRATE);
-        container.appendChild(iptFeedrate);
-
-        container.appendChild(App.createLabel("Board thickness:"));
-        iptThickness = App.createInputText(cast THICKNESS);
-        container.appendChild(iptThickness);
-
-        container.appendChild(App.createLabel("Bit length:"));
-        iptBitLength = App.createInputText(cast BIT_LENGTH);
-        container.appendChild(iptBitLength);
-
-        container.appendChild(App.createLabel("Bit width:"));
-        iptBitWidth = App.createInputText(cast BIT_WIDTH);
-        container.appendChild(iptBitWidth);
-
-        container.appendChild(App.createButton("Set parameters", setParameters));
-        container.appendChild(App.createButton("Generate", generateCode));
+        Browser.document.getElementById("setParameters").onclick = setParameters;
+        Browser.document.getElementById("generate").onclick = generateCode;
     }
 }

@@ -12,16 +12,14 @@ typedef Point = { x:Float, y:Float };
 class App
 {
     private var document:Document = Browser.document;
-    // private var stand:Stand;
     private var surface:Surface;
 
     public static var currentState:IState;
 
     public function new()
     {
-        // stand = { width : 10, height : 10, holes : new Array<Hole>() };
         surface = new Surface(cast document.getElementById("canvas"));
-        switchState(new state.Menu(surface));
+        switchState(new state.Custom(surface));
         // setButtons();
         // displayMenu();
     }

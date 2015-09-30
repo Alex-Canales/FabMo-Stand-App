@@ -4,23 +4,39 @@
     <meta charset="UTF-8">
     <title>Stand</title>
     <!-- Da warudo! WRYYYYYYYYYYYYYYYYYYYYYY -->
+    <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-    <div id="menu">
-        <!-- Menu -->
-        <!-- <button id="go&#45;custom">Custom</button> -->
-    </div>
-    <div id="custom">
-        <!-- Custom -->
-        <!-- <button id="back&#45;menu">Menu</button> -->
-        <!-- <button id="go&#45;finalize">Finalize</button> -->
-    </div>
-    <div id="finalization">
-        <!-- <button id="back&#45;custom">Customize</button> -->
-        <!-- <button id="back&#45;menu2">Menu</button> -->
-        <!-- <button id="make&#45;file">Make job</button> -->
-    </div>
     <canvas style="border:1px black solid;" id="canvas" width="400" height="400"></canvas>
+    <div id="custom" class="gui">
+        <button id="go-finalize">Next</button>
+        <br/>
+        <label for="width">Width: </label>
+        <input id="width" type="text" value="3" />
+        <br/>
+        <label for="height">Height: </label>
+        <input id="height" type="text" value="3" />
+        <br/>
+        <button id="setSize">Set size</button>
+    </div>
+    <div id="finalization" class="gui">
+        <button id="go-customize">Back</button>
+        <br/>
+        <label for="feedrate">Feedrate:</label>
+        <input id="feedrate" type="text">
+        <br/>
+        <label for="thickness">Board thickness:</label>
+        <input id="thickness" type="text">
+        <br/>
+        <label for="bitLength">Bit length:</label>
+        <input id="bitLength" type="text">
+        <br/>
+        <label for="bitWidth">Bit width:</label>
+        <input id="bitWidth" type="text">
+        <br/>
+        <button id="setParameters">Set parameters</button>
+        <button id="generate">Generate</button>
+    </div>
 
     <script src="jquery.js"></script>
     <script src="dashboard.js"></script>
