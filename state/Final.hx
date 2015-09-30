@@ -35,7 +35,21 @@ class Final implements IState
         iptPxToIn = cast Browser.document.getElementById("inToPx");
         iptPxToIn.value = Std.string(surface.inToPx);
         Browser.document.getElementById("changeInToPx").onclick = changeInToPx;
+
+        var exp:Element = Browser.document.getElementById("explanations-final");
+        exp.style.display = "block";
+        var toggle:Element = Browser.document.getElementById("toggle-details-final");
+        toggle.onclick = toggleDetails;
         //NOTE: do not put modification on the surface here
+    }
+
+    private function toggleDetails()
+    {
+        var elt:Element = Browser.document.getElementById("details-final");
+        if(elt.style.display == "none" || elt.style.display == "")
+            elt.style.display = "block";
+        else
+            elt.style.display = "none";
     }
 
     public function create():Void

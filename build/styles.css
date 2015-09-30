@@ -11,3 +11,11 @@ canvas {
 .below {
     display: block;
 }
+
+.explanations {
+    display: none;
+}
+
+.hide {
+    display: none;
+}
