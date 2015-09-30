@@ -46,7 +46,7 @@ class Final implements IState
 
     private function displayCustom():Void
     {
-        App.switchState(new Custom(surface));
+        App.switchState(new Custom(surface, stand.width, stand.height));
     }
 
     private function setParameters():Void

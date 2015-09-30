@@ -543,7 +543,9 @@ state_Custom.prototype = {
 	,createButtons: function() {
 		window.document.getElementById("go-finalize").onclick = $bind(this,this.displayFinal);
 		this.iptWidth = window.document.getElementById("width");
+		this.iptWidth.value = Std.string(this.width);
 		this.iptHeight = window.document.getElementById("height");
+		this.iptHeight.value = Std.string(this.height);
 		window.document.getElementById("setSize").onclick = $bind(this,this.setSize);
 	}
 };
@@ -565,7 +567,7 @@ state_Final.prototype = {
 		this.surface.removeAll();
 	}
 	,displayCustom: function() {
-		App.switchState(new state_Custom(this.surface));
+		App.switchState(new state_Custom(this.surface,this.stand.width,this.stand.height));
 	}
 	,setParameters: function() {
 		var bitWidth = App.checkFloat(this.iptBitWidth,0);

@@ -80,7 +80,9 @@ class Custom implements IState
         Browser.document.getElementById("go-finalize").onclick = displayFinal;
 
         iptWidth = cast Browser.document.getElementById("width");
+        iptWidth.value = Std.string(width);
         iptHeight = cast Browser.document.getElementById("height");
+        iptHeight.value = Std.string(height);
 
         Browser.document.getElementById("setSize").onclick = setSize;
     }

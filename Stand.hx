@@ -15,8 +15,8 @@ class Stand
     public static var HEIGHT_SUPPORT(default, null):Float = 3;
     // public static var CARVING_DEPTH(default, null):Float = 1/32;
 
-    private var width:Float;
-    private var height:Float;
+    public var width(default, null):Float;
+    public var height(default, null):Float;
     private var bitWidth:Float;
     private var thickness:Float;
 
