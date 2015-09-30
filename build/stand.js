@@ -243,7 +243,7 @@ Stand.prototype = {
 };
 var Surface = function(canvas) {
 	this.mousePressing = false;
-	this.inToPx = 10;
+	this.inToPx = 20;
 	this.elements = [];
 	this.canvas = canvas;
 	canvas.onmousedown = $bind(this,this.mousedown);
@@ -318,31 +318,36 @@ element_Dogbone.prototype = {
 		var yBottomBone = this.y + this.height;
 		context.beginPath();
 		context.rect(this.x,this.y,this.width,this.height);
-		context.fillStyle = "0x000000";
+		context.fillStyle = "#000000";
 		context.fill();
 		context.lineWidth = 0;
-		context.strokeStyle = "0x000000";
+		context.strokeStyle = "#000000";
 		context.stroke();
+		context.beginPath();
 		context.arc(xLeftBone,yTopBone,this.radius,Math.PI,2 * Math.PI,false);
-		context.fillStyle = "0x000000";
+		context.fillStyle = "#000000";
 		context.fill();
 		context.stroke();
+		context.beginPath();
 		context.arc(xLeftBone,yBottomBone,this.radius,0,Math.PI,false);
-		context.fillStyle = "0x000000";
+		context.fillStyle = "#000000";
 		context.fill();
 		context.stroke();
+		context.beginPath();
 		context.arc(xRightBone,yTopBone,this.radius,Math.PI,2 * Math.PI,false);
-		context.fillStyle = "0x000000";
+		context.fillStyle = "#000000";
 		context.fill();
 		context.stroke();
+		context.beginPath();
 		context.arc(xRightBone,yBottomBone,this.radius,0,Math.PI,false);
-		context.fillStyle = "0x000000";
+		context.fillStyle = "#000000";
 		context.fill();
 		context.stroke();
+		context.restore();
 	}
 };
 var element_Rectangle = function(x,y,draggable,callback,width,height,lineWidth,lineColor,fillColor) {
-	if(lineColor == null) lineColor = 0;
+	if(lineColor == null) lineColor = "black";
 	if(lineWidth == null) lineWidth = 1;
 	this.x = x;
 	this.y = y;
@@ -366,6 +371,7 @@ element_Rectangle.prototype = {
 		context.lineWidth = this.lineWidth;
 		context.strokeStyle = this.lineColor;
 		context.stroke();
+		context.restore();
 	}
 };
 var state_IState = function() { };

@@ -16,7 +16,7 @@ class Rectangle implements IElement
 
     public function new(x:Float, y:Float, draggable:Bool, callback:Dynamic,
             width:Float, height:Float, lineWidth:Int=1,
-            lineColor:Dynamic=0x000000, ?fillColor:Dynamic)
+            lineColor:Dynamic="black", ?fillColor:Dynamic)
     {
         this.x = x;
         this.y = y;
@@ -41,5 +41,7 @@ class Rectangle implements IElement
         context.lineWidth = lineWidth;
         context.strokeStyle = lineColor;
         context.stroke();
+
+        context.restore();
     }
 }

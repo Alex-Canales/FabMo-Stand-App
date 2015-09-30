@@ -7,7 +7,7 @@ import element.IElement;
 
 class Surface
 {
-    public var inToPx:Int = 10;
+    public var inToPx:Int = 20;
 
     public var canvas:CanvasElement;
     private var elements:Array<IElement>;

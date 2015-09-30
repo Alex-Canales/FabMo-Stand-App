@@ -36,34 +36,40 @@ class Dogbone implements IElement
 
         //Rectangle hole
         context.rect(x, y, width, height);
-        context.fillStyle = "0x000000";
+        context.fillStyle = "#000000";
         context.fill();
         context.lineWidth = 0;
-        context.strokeStyle = "0x000000";
+        context.strokeStyle = "#000000";
         context.stroke();
 
         //Draw shape top left
+        context.beginPath();
         context.arc(xLeftBone, yTopBone, radius, Math.PI, 2 * Math.PI, false);
-        context.fillStyle = "0x000000";
+        context.fillStyle = "#000000";
         context.fill();
         context.stroke();
 
         //Draw shape bottom left
+        context.beginPath();
         context.arc(xLeftBone, yBottomBone, radius, 0, Math.PI, false);
-        context.fillStyle = "0x000000";
+        context.fillStyle = "#000000";
         context.fill();
         context.stroke();
 
         //Draw top right
+        context.beginPath();
         context.arc(xRightBone, yTopBone, radius, Math.PI, 2 * Math.PI, false);
-        context.fillStyle = "0x000000";
+        context.fillStyle = "#000000";
         context.fill();
         context.stroke();
 
         //Draw bottom right
+        context.beginPath();
         context.arc(xRightBone, yBottomBone, radius, 0, Math.PI, false);
-        context.fillStyle = "0x000000";
+        context.fillStyle = "#000000";
         context.fill();
         context.stroke();
+
+        context.restore();
     }
 }

@@ -22,5 +22,6 @@ class Text implements IElement
     public function draw(context:CanvasRenderingContext2D):Void
     {
         context.fillText(text, x, y);
+        context.restore();
     }
 }
