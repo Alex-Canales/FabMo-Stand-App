@@ -1,8 +1,11 @@
 (function (console) { "use strict";
 var App = function() {
 	this.document = window.document;
+	var iptPxToIn;
 	this.surface = new Surface(this.document.getElementById("canvas"));
 	App.switchState(new state_Custom(this.surface));
+	iptPxToIn = window.document.getElementById("inToPx");
+	iptPxToIn.value = Std.string(this.surface.inToPx);
 };
 App.__name__ = true;
 App.switchState = function(newState) {
@@ -278,6 +281,9 @@ Std.__name__ = true;
 Std.string = function(s) {
 	return js_Boot.__string_rec(s,"");
 };
+Std["int"] = function(x) {
+	return x | 0;
+};
 var Surface = function(canvas) {
 	this.mousePressing = false;
 	this.inToPx = 20;
@@ -301,6 +307,9 @@ Surface.prototype = {
 	,removeAll: function() {
 		this.elements.splice(0,this.elements.length);
 		this.draw();
+	}
+	,setInToPx: function(value) {
+		this.inToPx = Std["int"](Math.max(1,value));
 	}
 	,draw: function() {
 		var context = this.canvas.getContext("2d",null);
@@ -506,6 +515,9 @@ var state_Custom = function(surface,widthInInch,heightInInch) {
 	this.surface = surface;
 	this.setWidth(widthInInch);
 	this.setHeight(heightInInch);
+	this.iptPxToIn = window.document.getElementById("inToPx");
+	if(surface.inToPx == null) this.iptPxToIn.value = "null"; else this.iptPxToIn.value = "" + surface.inToPx;
+	window.document.getElementById("changeInToPx").onclick = $bind(this,this.changeInToPx);
 };
 state_Custom.__name__ = true;
 state_Custom.__interfaces__ = [state_IState];
@@ -518,6 +530,10 @@ state_Custom.prototype = {
 		var y = this.surface.canvas.height - hR - 5;
 		this.rectangle = new element_Rectangle(x,y,false,null,wR,hR);
 		this.surface.add(this.rectangle);
+	}
+	,changeInToPx: function() {
+		this.surface.setInToPx(Std["int"](App.checkFloat(this.iptPxToIn,1)));
+		this.setSize();
 	}
 	,setWidth: function(widthInInch) {
 		this.width = Math.max(state_Custom.MIN_WIDTH,widthInInch);
@@ -554,6 +570,9 @@ var state_Final = function(surface,width,height) {
 	this.container.style.display = "inline-block";
 	this.surface = surface;
 	this.stand = new Stand(surface,width,height,state_Final.BIT_WIDTH,state_Final.THICKNESS);
+	this.iptPxToIn = window.document.getElementById("inToPx");
+	if(surface.inToPx == null) this.iptPxToIn.value = "null"; else this.iptPxToIn.value = "" + surface.inToPx;
+	window.document.getElementById("changeInToPx").onclick = $bind(this,this.changeInToPx);
 };
 state_Final.__name__ = true;
 state_Final.__interfaces__ = [state_IState];
@@ -565,6 +584,10 @@ state_Final.prototype = {
 	,destroy: function() {
 		this.container.style.display = "none";
 		this.surface.removeAll();
+	}
+	,changeInToPx: function() {
+		this.surface.setInToPx(Std["int"](App.checkFloat(this.iptPxToIn,1)));
+		this.setParameters();
 	}
 	,displayCustom: function() {
 		App.switchState(new state_Custom(this.surface,this.stand.width,this.stand.height));

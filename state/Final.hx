@@ -22,14 +22,19 @@ class Final implements IState
     private var iptBitWidth:InputElement;
     private var iptBitLength:InputElement;
     private var iptThickness:InputElement;
+    private var iptPxToIn:InputElement;
 
     public function new(surface:Surface, width:Float, height:Float)
     {
         container = Browser.document.getElementById("finalization");
         container.style.display = "inline-block";
         this.surface = surface;
-        //NOTE: do not write any thing in new
         stand = new Stand(surface, width, height, BIT_WIDTH, THICKNESS);
+
+        iptPxToIn = cast Browser.document.getElementById("inToPx");
+        iptPxToIn.value = Std.string(surface.inToPx);
+        Browser.document.getElementById("changeInToPx").onclick = changeInToPx;
+        //NOTE: do not put modification on the surface here
     }
 
     public function create():Void
@@ -42,6 +47,12 @@ class Final implements IState
     {
         container.style.display = "none";
         surface.removeAll();
+    }
+
+    private function changeInToPx():Void
+    {
+        surface.setInToPx(Std.int(App.checkFloat(iptPxToIn, 1)));
+        setParameters();
     }
 
     private function displayCustom():Void

@@ -9,6 +9,7 @@ class Custom implements IState
 {
     public var container:Element;
     public var surface:Surface;
+    private var iptPxToIn:InputElement;
 
     private var rectangle:element.Rectangle;
 
@@ -28,7 +29,11 @@ class Custom implements IState
         this.surface = surface;
         setWidth(widthInInch);
         setHeight(heightInInch);
-        //NOTE: do not write any thing in new
+
+        iptPxToIn = cast Browser.document.getElementById("inToPx");
+        iptPxToIn.value = Std.string(surface.inToPx);
+        Browser.document.getElementById("changeInToPx").onclick = changeInToPx;
+        //NOTE: do not put modification on the surface here
     }
 
     public function create():Void
@@ -41,6 +46,12 @@ class Custom implements IState
         var y:Float = surface.canvas.height - hR - 5;
         rectangle = new element.Rectangle(x, y, false, null, wR, hR);
         surface.add(rectangle);
+    }
+
+    private function changeInToPx():Void
+    {
+        surface.setInToPx(Std.int(App.checkFloat(iptPxToIn, 1)));
+        setSize();
     }
 
     private function setWidth(widthInInch):Void

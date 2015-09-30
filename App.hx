@@ -18,10 +18,13 @@ class App
 
     public function new()
     {
+        var iptPxToIn:InputElement;
+
         surface = new Surface(cast document.getElementById("canvas"));
         switchState(new state.Custom(surface));
-        // setButtons();
-        // displayMenu();
+
+        iptPxToIn = cast Browser.document.getElementById("inToPx");
+        iptPxToIn.value = Std.string(surface.inToPx);
     }
 
     public static function switchState(newState:IState)

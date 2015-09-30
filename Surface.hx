@@ -43,6 +43,11 @@ class Surface
         draw();
     }
 
+    public function setInToPx(value:Int):Void
+    {
+        inToPx = Std.int(Math.max(1, value));
+    }
+
     public function draw():Void
     {
         var context:CanvasRenderingContext2D = canvas.getContext2d();
