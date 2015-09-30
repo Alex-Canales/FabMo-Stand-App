@@ -290,12 +290,15 @@ class Stand
         var pathSupportPart:Array<Point> = getPathSupportPart();
         var pathSupportCarving:Array<Point> = getPathSupportCarving();
         var code:String = "G20 G90\n";
+
+        //It is better to do carving and simple cuts before cutting parts
+        // (for the stability)
         code += g(0, feedrate, null, null, 2) + "\n";
         code += cutPath(pathDogbone, -thickness, bitLength, feedrate) + "\n";
-        code += cutPath(pathCentral, -thickness, bitLength, feedrate) + "\n";
-        code += cutPath(pathSupportPart, -thickness, bitLength, feedrate) + "\n";
         code += cutPath(pathSupportCarving, -carvDepth, bitLength, feedrate);
         code +=  "\n";
+        code += cutPath(pathCentral, -thickness, bitLength, feedrate) + "\n";
+        code += cutPath(pathSupportPart, -thickness, bitLength, feedrate) + "\n";
 
         code += "M30";
         return code;

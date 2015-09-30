@@ -238,10 +238,10 @@ Stand.prototype = {
 		var code = "G20 G90\n";
 		code += this.g(0,feedrate,null,null,2) + "\n";
 		code += this.cutPath(pathDogbone,-this.thickness,bitLength,feedrate) + "\n";
-		code += this.cutPath(pathCentral,-this.thickness,bitLength,feedrate) + "\n";
-		code += this.cutPath(pathSupportPart,-this.thickness,bitLength,feedrate) + "\n";
 		code += this.cutPath(pathSupportCarving,-carvDepth,bitLength,feedrate);
 		code += "\n";
+		code += this.cutPath(pathCentral,-this.thickness,bitLength,feedrate) + "\n";
+		code += this.cutPath(pathSupportPart,-this.thickness,bitLength,feedrate) + "\n";
 		code += "M30";
 		return code;
 	}
