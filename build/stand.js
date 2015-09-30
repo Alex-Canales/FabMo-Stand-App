@@ -512,6 +512,8 @@ var state_Custom = function(surface,widthInInch,heightInInch) {
 	if(widthInInch == null) widthInInch = 0;
 	this.container = window.document.getElementById("custom");
 	this.container.style.display = "inline-block";
+	this.sampleContainer = window.document.getElementById("samples");
+	this.sampleContainer.style.display = "block";
 	this.surface = surface;
 	this.setWidth(widthInInch);
 	this.setHeight(heightInInch);
@@ -543,7 +545,19 @@ state_Custom.prototype = {
 	}
 	,destroy: function() {
 		this.container.style.display = "none";
+		this.sampleContainer.style.display = "none";
 		this.surface.removeAll();
+	}
+	,setSizeSample: function(width,height) {
+		if(width == null) this.iptWidth.value = "null"; else this.iptWidth.value = "" + width;
+		if(height == null) this.iptHeight.value = "null"; else this.iptHeight.value = "" + height;
+		this.setSize();
+	}
+	,setIPhone: function() {
+		this.setSizeSample(3,6);
+	}
+	,setMusicStand: function() {
+		this.setSizeSample(18,16);
 	}
 	,displayFinal: function() {
 		App.switchState(new state_Final(this.surface,this.width,this.height));
@@ -563,6 +577,8 @@ state_Custom.prototype = {
 		this.iptHeight = window.document.getElementById("height");
 		this.iptHeight.value = Std.string(this.height);
 		window.document.getElementById("setSize").onclick = $bind(this,this.setSize);
+		window.document.getElementById("iPhone").onclick = $bind(this,this.setIPhone);
+		window.document.getElementById("music-stand").onclick = $bind(this,this.setMusicStand);
 	}
 };
 var state_Final = function(surface,width,height) {

@@ -28,6 +28,7 @@ class Final implements IState
     {
         container = Browser.document.getElementById("finalization");
         container.style.display = "inline-block";
+
         this.surface = surface;
         stand = new Stand(surface, width, height, BIT_WIDTH, THICKNESS);
 

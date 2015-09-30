@@ -1,9 +1,13 @@
 canvas {
-    display : inline-block;
-    vertical-align : top;
+    display: inline-block;
+    vertical-align: top;
 }
 
 .gui {
-    display : none;
-    vertical-align : top;
+    display: none;
+    vertical-align: top;
+}
+
+.below {
+    display: block;
 }

@@ -8,6 +8,7 @@ import js.html.InputElement;
 class Custom implements IState
 {
     public var container:Element;
+    public var sampleContainer:Element;
     public var surface:Surface;
     private var iptPxToIn:InputElement;
 
@@ -26,6 +27,9 @@ class Custom implements IState
     {
         container = Browser.document.getElementById("custom");
         container.style.display = "inline-block";
+        sampleContainer = Browser.document.getElementById("samples");
+        sampleContainer .style.display = "block";
+
         this.surface = surface;
         setWidth(widthInInch);
         setHeight(heightInInch);
@@ -67,7 +71,25 @@ class Custom implements IState
     public function destroy():Void
     {
         container.style.display = "none";
+        sampleContainer.style.display = "none";
         surface.removeAll();
+    }
+
+    private function setSizeSample(width:Float, height:Float):Void
+    {
+        iptWidth.value = Std.string(width);
+        iptHeight.value = Std.string(height);
+        setSize();
+    }
+
+    private function setIPhone():Void
+    {
+        setSizeSample(3, 6);
+    }
+
+    private function setMusicStand():Void
+    {
+        setSizeSample(18, 16);
     }
 
     private function displayFinal():Void
@@ -96,5 +118,8 @@ class Custom implements IState
         iptHeight.value = Std.string(height);
 
         Browser.document.getElementById("setSize").onclick = setSize;
+
+        Browser.document.getElementById("iPhone").onclick = setIPhone;
+        Browser.document.getElementById("music-stand").onclick = setMusicStand;
     }
 }
