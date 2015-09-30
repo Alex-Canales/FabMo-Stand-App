@@ -9,6 +9,7 @@ class Custom implements IState
 {
     public var container:Element;
     public var sampleContainer:Element;
+    public var explanationContainer:Element;
     public var surface:Surface;
     private var iptPxToIn:InputElement;
 
@@ -38,8 +39,8 @@ class Custom implements IState
         iptPxToIn.value = Std.string(surface.inToPx);
         Browser.document.getElementById("changeInToPx").onclick = changeInToPx;
 
-        var exp:Element = Browser.document.getElementById("explanations-custom");
-        exp.style.display = "block";
+        explanationContainer = Browser.document.getElementById("explanations-custom");
+        explanationContainer.style.display = "block";
         var toggle:Element = Browser.document.getElementById("toggle-details-custom");
         toggle.onclick = toggleDetails;
         //NOTE: do not put modification on the surface here
@@ -86,6 +87,7 @@ class Custom implements IState
     {
         container.style.display = "none";
         sampleContainer.style.display = "none";
+        explanationContainer.style.display = "none";
         surface.removeAll();
     }
 

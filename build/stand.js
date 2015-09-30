@@ -520,8 +520,8 @@ var state_Custom = function(surface,widthInInch,heightInInch) {
 	this.iptPxToIn = window.document.getElementById("inToPx");
 	if(surface.inToPx == null) this.iptPxToIn.value = "null"; else this.iptPxToIn.value = "" + surface.inToPx;
 	window.document.getElementById("changeInToPx").onclick = $bind(this,this.changeInToPx);
-	var exp = window.document.getElementById("explanations-custom");
-	exp.style.display = "block";
+	this.explanationContainer = window.document.getElementById("explanations-custom");
+	this.explanationContainer.style.display = "block";
 	var toggle = window.document.getElementById("toggle-details-custom");
 	toggle.onclick = $bind(this,this.toggleDetails);
 };
@@ -554,6 +554,7 @@ state_Custom.prototype = {
 	,destroy: function() {
 		this.container.style.display = "none";
 		this.sampleContainer.style.display = "none";
+		this.explanationContainer.style.display = "none";
 		this.surface.removeAll();
 	}
 	,setSizeSample: function(width,height) {
@@ -597,8 +598,8 @@ var state_Final = function(surface,width,height) {
 	this.iptPxToIn = window.document.getElementById("inToPx");
 	if(surface.inToPx == null) this.iptPxToIn.value = "null"; else this.iptPxToIn.value = "" + surface.inToPx;
 	window.document.getElementById("changeInToPx").onclick = $bind(this,this.changeInToPx);
-	var exp = window.document.getElementById("explanations-final");
-	exp.style.display = "block";
+	this.explanationContainer = window.document.getElementById("explanations-final");
+	this.explanationContainer.style.display = "block";
 	var toggle = window.document.getElementById("toggle-details-final");
 	toggle.onclick = $bind(this,this.toggleDetails);
 };
@@ -615,6 +616,7 @@ state_Final.prototype = {
 	}
 	,destroy: function() {
 		this.container.style.display = "none";
+		this.explanationContainer.style.display = "none";
 		this.surface.removeAll();
 	}
 	,changeInToPx: function() {

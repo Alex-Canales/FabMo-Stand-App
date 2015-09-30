@@ -8,6 +8,7 @@ import js.html.InputElement;
 class Final implements IState
 {
     public var container:Element;
+    public var explanationContainer:Element;
     public var surface:Surface;
 
     //Default values
@@ -36,8 +37,8 @@ class Final implements IState
         iptPxToIn.value = Std.string(surface.inToPx);
         Browser.document.getElementById("changeInToPx").onclick = changeInToPx;
 
-        var exp:Element = Browser.document.getElementById("explanations-final");
-        exp.style.display = "block";
+        explanationContainer = Browser.document.getElementById("explanations-final");
+        explanationContainer.style.display = "block";
         var toggle:Element = Browser.document.getElementById("toggle-details-final");
         toggle.onclick = toggleDetails;
         //NOTE: do not put modification on the surface here
@@ -61,6 +62,7 @@ class Final implements IState
     public function destroy():Void
     {
         container.style.display = "none";
+        explanationContainer.style.display = "none";
         surface.removeAll();
     }
 
