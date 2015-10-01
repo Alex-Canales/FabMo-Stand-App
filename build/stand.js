@@ -158,7 +158,7 @@ Stand.prototype = {
 		if(x != null) code += " X" + x;
 		if(y != null) code += " Y" + y;
 		if(z != null) code += " Z" + z;
-		code += " F" + f;
+		if(type == 1) code += " F" + f;
 		return code;
 	}
 	,lengthVector: function(vector) {
