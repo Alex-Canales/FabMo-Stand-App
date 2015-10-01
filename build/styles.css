@@ -19,3 +19,13 @@ canvas {
 .hide {
     display: none;
 }
+
+input {
+    max-width: 50px;
+}
+
+.toggle {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+}

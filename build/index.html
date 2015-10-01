@@ -8,7 +8,7 @@
 </head>
 <body>
     <div id="explanations-custom" class="explanations">
-        <p id="toggle-details-custom">Show explanations</p>
+        <p id="toggle-details-custom" class="toggle">Show explanations</p>
         <div id="details-custom" class="hide">
             You can here set the size of your stand. Some samples are already
             avaliable.
@@ -20,7 +20,7 @@
         </div>
     </div>
     <div id="explanations-final" class="explanations">
-        <p id="toggle-details-final">Show explanations</p>
+        <p id="toggle-details-final" class="toggle">Show explanations</p>
         <div id="details-final" class="hide">
             <p>
                 You can set here the parameters for the cut.
@@ -38,37 +38,46 @@
             </ul>
         </div>
     </div>
-    <label for="inToPx">Number of pixels for an inch: </label>
-    <input id="inToPx" type="text" />
-    <button id="changeInToPx">Change display</button>
-    <br/>
+    <div style="margin-bottom: 4px;">
+        <label for="inToPx">Number of pixels for an inch: </label>
+        <input id="inToPx" type="text" />
+        <button id="changeInToPx">Change display</button>
+    </div>
     <canvas style="border:1px black solid;" id="canvas" width="400" height="400"></canvas>
     <div id="custom" class="gui">
         <button id="go-finalize">Next</button>
-        <br/>
-        <label for="width">Width: </label>
-        <input id="width" type="text"/>
-        <br/>
-        <label for="height">Height: </label>
-        <input id="height" type="text"/>
-        <br/>
+        <table>
+            <tr>
+                <td> <label for="width">Width: </label> </td>
+                <td> <input id="width" type="text"/> </td>
+            </tr>
+            <tr>
+                <td> <label for="height">Height: </label> </td>
+                <td> <input id="height" type="text"/> </td>
+            </tr>
+        </table>
         <button id="setSize">Set size</button>
     </div>
     <div id="finalization" class="gui">
         <button id="go-customize">Back</button>
-        <br/>
-        <label for="feedrate">Feedrate:</label>
-        <input id="feedrate" type="text"/>
-        <br/>
-        <label for="thickness">Board thickness:</label>
-        <input id="thickness" type="text"/>
-        <br/>
-        <label for="bitLength">Bit length:</label>
-        <input id="bitLength" type="text"/>
-        <br/>
-        <label for="bitWidth">Bit width:</label>
-        <input id="bitWidth" type="text"/>
-        <br/>
+        <table>
+            <tr>
+                <td> <label for="feedrate">Feedrate:</label> </td>
+                <td> <input id="feedrate" type="text"/> </td>
+            </tr>
+            <tr>
+                <td> <label for="thickness">Board thickness:</label> </td>
+                <td> <input id="thickness" type="text"/> </td>
+            </tr>
+            <tr>
+                <td> <label for="bitLength">Bit length:</label> </td>
+                <td> <input id="bitLength" type="text"/> </td>
+            </tr>
+            <tr>
+                <td> <label for="bitWidth">Bit width:</label> </td>
+                <td> <input id="bitWidth" type="text"/> </td>
+            </tr>
+        </table>
         <button id="setParameters">Set parameters</button>
         <button id="generate">Generate</button>
     </div>
