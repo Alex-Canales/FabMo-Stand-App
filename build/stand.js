@@ -173,20 +173,20 @@ Stand.prototype = {
 		var normalized_x = vector.x / pathSize;
 		var normalized_y = vector.y / pathSize;
 		var cutLength = (pathSize - size) / 2;
-		var vectorCut_x = cutLength * normalized_x * pathSize;
-		var vectorCut_y = cutLength * normalized_y * pathSize;
+		var vectorCut_x = cutLength * normalized_x;
+		var vectorCut_y = cutLength * normalized_y;
 		var tapStart = { x : start.x + vectorCut_x, y : start.y + vectorCut_y};
 		var tapEnd = { x : end.x - vectorCut_x, y : end.y - vectorCut_y};
 		tap.push(tapStart);
 		tap.push(tapEnd);
 		return tap;
 	}
-	,gcodeTap: function(start,end,zDepth,zSafe,feedrate) {
+	,gcodeTap: function(start,end,zCurrentDepth,zDepthTopTap,feedrate) {
 		var codes = [];
-		codes.push(this.g(1,feedrate,start.x,start.y,zDepth));
-		codes.push(this.g(1,feedrate,null,null,zSafe));
-		codes.push(this.g(0,feedrate,end.x,end.y));
-		codes.push(this.g(1,feedrate,null,null,zDepth));
+		codes.push(this.g(1,feedrate,start.x,start.y,zCurrentDepth));
+		codes.push(this.g(1,feedrate,null,null,zDepthTopTap));
+		codes.push(this.g(1,feedrate,end.x,end.y));
+		codes.push(this.g(1,feedrate,null,null,zCurrentDepth));
 		return codes.join("\n");
 	}
 	,cutPath: function(path,depth,bitLength,feedrate,rectangleAndTap) {
@@ -195,7 +195,8 @@ Stand.prototype = {
 		var codes = [];
 		var safeZ = 2;
 		var tapLength = 0.25;
-		var tapHeight = 0.625;
+		var tapHeight = 0.0625;
+		var depthTopTap = depth + tapHeight;
 		var currentDepth = 0;
 		var iEnd = path.length - 1;
 		codes.push(this.g(0,feedrate,path[0].x,path[0].y));
@@ -208,7 +209,7 @@ Stand.prototype = {
 				var i = _g1++;
 				if(rectangleAndTap && i > 0 && Math.abs(depth - currentDepth) <= tapHeight) {
 					var tap = this.calculateTap(path[i - 1],path[i],tapLength);
-					if(tap.length == 2) codes.push(this.gcodeTap(tap[0],tap[1],currentDepth,safeZ,feedrate));
+					if(tap.length == 2) codes.push(this.gcodeTap(tap[0],tap[1],currentDepth,depthTopTap,feedrate));
 				}
 				codes.push(this.g(1,feedrate,path[i].x,path[i].y));
 			}
@@ -306,9 +307,9 @@ Stand.prototype = {
 		code += this.cutPath(pathDogbone,-this.thickness,bitLength,feedrate) + "\n";
 		code += this.cutPath(pathSupportCarving,-carvDepth,bitLength,feedrate);
 		code += "\n";
-		code += this.cutPath(pathCentral,-this.thickness,bitLength,feedrate);
+		code += this.cutPath(pathCentral,-this.thickness,bitLength,feedrate,true);
 		code += "\n";
-		code += this.cutPath(pathSupportPart,-this.thickness,bitLength,feedrate);
+		code += this.cutPath(pathSupportPart,-this.thickness,bitLength,feedrate,true);
 		code += "\n";
 		code += "M30";
 		return code;

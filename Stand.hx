@@ -198,8 +198,8 @@ class Stand
         // Vector of the cut from the start to the end (relatively to the start
         // position):
         var vectorCut:Point = {
-            x : cutLength * normalized.x * pathSize,
-            y : cutLength * normalized.y * pathSize,
+            x : cutLength * normalized.x,
+            y : cutLength * normalized.y
         }
 
         var tapStart:Point = {
@@ -216,15 +216,15 @@ class Stand
         return tap;
     }
 
-    private function gcodeTap(start:Point, end:Point, zDepth:Float, zSafe:Float,
-            feedrate:Float):String
+    private function gcodeTap(start:Point, end:Point, zCurrentDepth:Float,
+            zDepthTopTap:Float, feedrate:Float):String
     {
         var codes:Array<String> = new Array<String>();
 
-        codes.push(g(1, feedrate, start.x, start.y, zDepth));
-        codes.push(g(1, feedrate, null, null, zSafe));
-        codes.push(g(0, feedrate, end.x, end.y));
-        codes.push(g(1, feedrate, null, null, zDepth));
+        codes.push(g(1, feedrate, start.x, start.y, zCurrentDepth));
+        codes.push(g(1, feedrate, null, null, zDepthTopTap));
+        codes.push(g(1, feedrate, end.x, end.y));
+        codes.push(g(1, feedrate, null, null, zCurrentDepth));
 
         return codes.join("\n");
     }
@@ -243,7 +243,8 @@ class Stand
         var codes:Array<String> = new Array<String>();
         var safeZ:Float = 2;
         var tapLength:Float = 0.25;
-        var tapHeight:Float = 0.625;
+        var tapHeight:Float = 0.0625;
+        var depthTopTap:Float = depth + tapHeight;
         var currentDepth:Float = 0;
         var iEnd:Int = path.length - 1;
 
@@ -263,8 +264,8 @@ class Stand
                             tapLength);
                     if(tap.length == 2)
                     {
-                        codes.push(gcodeTap(tap[0], tap[1], currentDepth, safeZ,
-                                    feedrate));
+                        codes.push(gcodeTap(tap[0], tap[1], currentDepth,
+                                    depthTopTap, feedrate));
                     }
                 }
                 codes.push(g(1, feedrate, path[i].x, path[i].y));
@@ -410,11 +411,9 @@ class Stand
         code += cutPath(pathDogbone, -thickness, bitLength, feedrate) + "\n";
         code += cutPath(pathSupportCarving, -carvDepth, bitLength, feedrate);
         code +=  "\n";
-        // code += cutPath(pathCentral, -thickness, bitLength, feedrate, true);
-        code += cutPath(pathCentral, -thickness, bitLength, feedrate);
+        code += cutPath(pathCentral, -thickness, bitLength, feedrate, true);
         code += "\n";
-        // code += cutPath(pathSupportPart, -thickness, bitLength, feedrate, true);
-        code += cutPath(pathSupportPart, -thickness, bitLength, feedrate);
+        code += cutPath(pathSupportPart, -thickness, bitLength, feedrate, true);
         code += "\n";
 
         code += "M30";
