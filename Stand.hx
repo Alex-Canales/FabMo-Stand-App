@@ -171,18 +171,79 @@ class Stand
         return code;
     }
 
+    private function lengthVector(vector:Point):Float
+    {
+        return Math.sqrt(Math.pow(vector.x, 2) + Math.pow(vector.y, 2));
+    }
+
+    //The tap is in the middle of the path. No tap if size >= path size.
+    //Returns [start, end]
+    private function calculateTap(start:Point, end:Point, size:Float):Array<Point>
+    {
+        var tap:Array<Point> = new Array<Point>();
+        if(size <= 0)
+            return tap;
+
+        var vector:Point = { x : end.x - start.x, y : end.y - start.y, };
+        var pathSize:Float = lengthVector(vector);
+
+        if(size >= pathSize)
+            return tap;
+
+        var normalized:Point = {
+            x : vector.x / pathSize,
+            y : vector.y / pathSize
+        };
+        var cutLength = (pathSize - size) / 2;
+        // Vector of the cut from the start to the end (relatively to the start
+        // position):
+        var vectorCut:Point = {
+            x : cutLength * normalized.x * pathSize,
+            y : cutLength * normalized.y * pathSize,
+        }
+
+        var tapStart:Point = {
+            x : start.x + vectorCut.x,
+            y : start.y + vectorCut.y
+        }
+        var tapEnd:Point = {
+            x : end.x - vectorCut.x,
+            y : end.y - vectorCut.y
+        }
+        tap.push(tapStart);
+        tap.push(tapEnd);
+
+        return tap;
+    }
+
+    private function gcodeTap(start:Point, end:Point, zDepth:Float, zSafe:Float,
+            feedrate:Float):String
+    {
+        var codes:Array<String> = new Array<String>();
+
+        codes.push(g(1, feedrate, start.x, start.y, zDepth));
+        codes.push(g(1, feedrate, null, null, zSafe));
+        codes.push(g(0, feedrate, end.x, end.y));
+        codes.push(g(1, feedrate, null, null, zDepth));
+
+        return codes.join("\n");
+    }
+
     // Returns the GCode for cutting this part
     // The bit will insert in the first point then follow the path until
     // the last point and leave. Continue until cut at the chosen depth.
     // Assumes the bit is above the board and not inside
     //  depth is negative (cutting into 3 inches => depth = -3)
     private function cutPath(path:Array<Point>, depth:Float, bitLength:Float,
-            feedrate:Float):String
+            feedrate:Float, ?rectangleAndTap:Bool=false):String
     {
         if(path.length == 0 || depth == 0)
             return "";
 
         var codes:Array<String> = new Array<String>();
+        var safeZ:Float = 2;
+        var tapLength:Float = 0.25;
+        var tapHeight:Float = 0.625;
         var currentDepth:Float = 0;
         var iEnd:Int = path.length - 1;
 
@@ -194,17 +255,29 @@ class Stand
             codes.push(g(1, feedrate, null, null, currentDepth));
             for(i in 0...path.length)
             {
+                //The tap must be 1/16 of inches height
+                if(rectangleAndTap && i > 0 &&
+                        Math.abs(depth - currentDepth) <= tapHeight)
+                {
+                    var tap:Array<Point> = calculateTap(path[i-1], path[i],
+                            tapLength);
+                    if(tap.length == 2)
+                    {
+                        codes.push(gcodeTap(tap[0], tap[1], currentDepth, safeZ,
+                                    feedrate));
+                    }
+                }
                 codes.push(g(1, feedrate, path[i].x, path[i].y));
             }
 
             //If a closed path, no need to rise the bit each time
             if(path[0].x != path[iEnd].x || path[0].y != path[iEnd].y)
-                codes.push(g(1, feedrate, null, null, 2));
+                codes.push(g(1, feedrate, null, null, safeZ));
         }
 
         //If a closed path, it is needed to go rise the bit
         if(path[0].x == path[iEnd].x && path[0].y == path[iEnd].y)
-            codes.push(g(1, feedrate, null, null, 2));
+            codes.push(g(1, feedrate, null, null, safeZ));
 
         return codes.join('\n');
     }
@@ -337,8 +410,12 @@ class Stand
         code += cutPath(pathDogbone, -thickness, bitLength, feedrate) + "\n";
         code += cutPath(pathSupportCarving, -carvDepth, bitLength, feedrate);
         code +=  "\n";
-        code += cutPath(pathCentral, -thickness, bitLength, feedrate) + "\n";
-        code += cutPath(pathSupportPart, -thickness, bitLength, feedrate) + "\n";
+        // code += cutPath(pathCentral, -thickness, bitLength, feedrate, true);
+        code += cutPath(pathCentral, -thickness, bitLength, feedrate);
+        code += "\n";
+        // code += cutPath(pathSupportPart, -thickness, bitLength, feedrate, true);
+        code += cutPath(pathSupportPart, -thickness, bitLength, feedrate);
+        code += "\n";
 
         code += "M30";
         return code;

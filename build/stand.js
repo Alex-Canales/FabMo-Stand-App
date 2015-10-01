@@ -161,9 +161,41 @@ Stand.prototype = {
 		code += " F" + f;
 		return code;
 	}
-	,cutPath: function(path,depth,bitLength,feedrate) {
+	,lengthVector: function(vector) {
+		return Math.sqrt(Math.pow(vector.x,2) + Math.pow(vector.y,2));
+	}
+	,calculateTap: function(start,end,size) {
+		var tap = [];
+		if(size <= 0) return tap;
+		var vector = { x : end.x - start.x, y : end.y - start.y};
+		var pathSize = this.lengthVector(vector);
+		if(size >= pathSize) return tap;
+		var normalized_x = vector.x / pathSize;
+		var normalized_y = vector.y / pathSize;
+		var cutLength = (pathSize - size) / 2;
+		var vectorCut_x = cutLength * normalized_x * pathSize;
+		var vectorCut_y = cutLength * normalized_y * pathSize;
+		var tapStart = { x : start.x + vectorCut_x, y : start.y + vectorCut_y};
+		var tapEnd = { x : end.x - vectorCut_x, y : end.y - vectorCut_y};
+		tap.push(tapStart);
+		tap.push(tapEnd);
+		return tap;
+	}
+	,gcodeTap: function(start,end,zDepth,zSafe,feedrate) {
+		var codes = [];
+		codes.push(this.g(1,feedrate,start.x,start.y,zDepth));
+		codes.push(this.g(1,feedrate,null,null,zSafe));
+		codes.push(this.g(0,feedrate,end.x,end.y));
+		codes.push(this.g(1,feedrate,null,null,zDepth));
+		return codes.join("\n");
+	}
+	,cutPath: function(path,depth,bitLength,feedrate,rectangleAndTap) {
+		if(rectangleAndTap == null) rectangleAndTap = false;
 		if(path.length == 0 || depth == 0) return "";
 		var codes = [];
+		var safeZ = 2;
+		var tapLength = 0.25;
+		var tapHeight = 0.625;
 		var currentDepth = 0;
 		var iEnd = path.length - 1;
 		codes.push(this.g(0,feedrate,path[0].x,path[0].y));
@@ -174,11 +206,15 @@ Stand.prototype = {
 			var _g = path.length;
 			while(_g1 < _g) {
 				var i = _g1++;
+				if(rectangleAndTap && i > 0 && Math.abs(depth - currentDepth) <= tapHeight) {
+					var tap = this.calculateTap(path[i - 1],path[i],tapLength);
+					if(tap.length == 2) codes.push(this.gcodeTap(tap[0],tap[1],currentDepth,safeZ,feedrate));
+				}
 				codes.push(this.g(1,feedrate,path[i].x,path[i].y));
 			}
-			if(path[0].x != path[iEnd].x || path[0].y != path[iEnd].y) codes.push(this.g(1,feedrate,null,null,2));
+			if(path[0].x != path[iEnd].x || path[0].y != path[iEnd].y) codes.push(this.g(1,feedrate,null,null,safeZ));
 		}
-		if(path[0].x == path[iEnd].x && path[0].y == path[iEnd].y) codes.push(this.g(1,feedrate,null,null,2));
+		if(path[0].x == path[iEnd].x && path[0].y == path[iEnd].y) codes.push(this.g(1,feedrate,null,null,safeZ));
 		return codes.join("\n");
 	}
 	,getPathArroundRectangle: function(element) {
@@ -270,8 +306,10 @@ Stand.prototype = {
 		code += this.cutPath(pathDogbone,-this.thickness,bitLength,feedrate) + "\n";
 		code += this.cutPath(pathSupportCarving,-carvDepth,bitLength,feedrate);
 		code += "\n";
-		code += this.cutPath(pathCentral,-this.thickness,bitLength,feedrate) + "\n";
-		code += this.cutPath(pathSupportPart,-this.thickness,bitLength,feedrate) + "\n";
+		code += this.cutPath(pathCentral,-this.thickness,bitLength,feedrate);
+		code += "\n";
+		code += this.cutPath(pathSupportPart,-this.thickness,bitLength,feedrate);
+		code += "\n";
 		code += "M30";
 		return code;
 	}
