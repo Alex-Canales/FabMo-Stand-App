@@ -35,7 +35,7 @@ class Final implements IState
 
         iptPxToIn = cast Browser.document.getElementById("inToPx");
         iptPxToIn.value = Std.string(surface.inToPx);
-        Browser.document.getElementById("changeInToPx").onclick = changeInToPx;
+        iptPxToIn.onchange = changeInToPx;
 
         explanationContainer = Browser.document.getElementById("explanations-final");
         explanationContainer.style.display = "block";
@@ -101,14 +101,17 @@ class Final implements IState
         Browser.document.getElementById("go-customize").onclick = displayCustom;
         iptFeedrate = cast Browser.document.getElementById("feedrate");
         iptFeedrate.value = Std.string(FEEDRATE);
+        iptFeedrate.onchange = setParameters;
         iptThickness = cast Browser.document.getElementById("thickness");
-        iptThickness .value = Std.string(THICKNESS);
+        iptThickness.value = Std.string(THICKNESS);
+        iptThickness.onchange = setParameters;
         iptBitLength = cast Browser.document.getElementById("bitLength");
-        iptBitLength .value = Std.string(BIT_LENGTH);
+        iptBitLength.value = Std.string(BIT_LENGTH);
+        iptBitLength.onchange = setParameters;
         iptBitWidth = cast Browser.document.getElementById("bitWidth");
-        iptBitWidth .value = Std.string(BIT_WIDTH);
+        iptBitWidth.value = Std.string(BIT_WIDTH);
+        iptBitWidth.onchange = setParameters;
 
-        Browser.document.getElementById("setParameters").onclick = setParameters;
         Browser.document.getElementById("generate").onclick = generateCode;
     }
 }

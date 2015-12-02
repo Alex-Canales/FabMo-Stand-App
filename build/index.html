@@ -38,14 +38,11 @@
             </ul>
         </div>
     </div>
-    <div style="margin-bottom: 4px;">
-        <label for="inToPx">Number of pixels for an inch: </label>
-        <input id="inToPx" type="text" />
-        <button id="changeInToPx">Change display</button>
-    </div>
+
     <canvas style="border:1px black solid;" id="canvas" width="400" height="400"></canvas>
     <div id="custom" class="gui">
         <button id="go-finalize">Next</button>
+        <!-- <p>Step 1/2</p> -->
         <table>
             <tr>
                 <td> <label for="width">Width: </label> </td>
@@ -56,10 +53,16 @@
                 <td> <input id="height" type="text"/> </td>
             </tr>
         </table>
-        <button id="setSize">Set size</button>
+        <!-- <button id="setSize">Set size</button> -->
+        <p>Predifined:</p>
+        <button id="iPhone">iPhone</button>
+        <br/>
+        <button id="music-stand">Music stand</button>
     </div>
     <div id="finalization" class="gui">
         <button id="go-customize">Back</button>
+        <button id="generate">Generate</button>
+        <!-- <p>Step 2/2</p> -->
         <table>
             <tr>
                 <td> <label for="feedrate">Feedrate:</label> </td>
@@ -78,13 +81,17 @@
                 <td> <input id="bitWidth" type="text"/> </td>
             </tr>
         </table>
-        <button id="setParameters">Set parameters</button>
-        <button id="generate">Generate</button>
+        <!-- <button id="setParameters">Set parameters</button> -->
     </div>
-    <div id="samples" class="below">
-        <!-- Should be images -->
-        <button id="iPhone">iPhone</button>
-        <button id="music-stand">Music stand</button>
+    <!-- <div id="samples" class="below"> -->
+    <!--     <!&#45;&#45; Should be images &#45;&#45;> -->
+    <!--     <button id="iPhone">iPhone</button> -->
+    <!--     <button id="music&#45;stand">Music stand</button> -->
+    <!-- </div> -->
+    <div style="margin-bottom: 4px;">
+        <label for="inToPx">Number of pixels for an inch: </label>
+        <input id="inToPx" type="text" />
+        <!-- <button id="changeInToPx">Change display</button> -->
     </div>
 
     <script src="jquery.js"></script>

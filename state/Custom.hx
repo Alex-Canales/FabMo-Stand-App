@@ -8,7 +8,7 @@ import js.html.InputElement;
 class Custom implements IState
 {
     public var container:Element;
-    public var sampleContainer:Element;
+    // public var sampleContainer:Element;
     public var explanationContainer:Element;
     public var surface:Surface;
     private var iptPxToIn:InputElement;
@@ -28,8 +28,8 @@ class Custom implements IState
     {
         container = Browser.document.getElementById("custom");
         container.style.display = "inline-block";
-        sampleContainer = Browser.document.getElementById("samples");
-        sampleContainer .style.display = "block";
+        // sampleContainer = Browser.document.getElementById("samples");
+        // sampleContainer .style.display = "block";
 
         this.surface = surface;
         setWidth(widthInInch);
@@ -37,7 +37,7 @@ class Custom implements IState
 
         iptPxToIn = cast Browser.document.getElementById("inToPx");
         iptPxToIn.value = Std.string(surface.inToPx);
-        Browser.document.getElementById("changeInToPx").onclick = changeInToPx;
+        iptPxToIn.onchange = changeInToPx;
 
         explanationContainer = Browser.document.getElementById("explanations-custom");
         explanationContainer.style.display = "block";
@@ -86,7 +86,7 @@ class Custom implements IState
     public function destroy():Void
     {
         container.style.display = "none";
-        sampleContainer.style.display = "none";
+        // sampleContainer.style.display = "none";
         explanationContainer.style.display = "none";
         surface.removeAll();
     }
@@ -130,10 +130,10 @@ class Custom implements IState
 
         iptWidth = cast Browser.document.getElementById("width");
         iptWidth.value = Std.string(width);
+        iptWidth.onchange = setSize;
         iptHeight = cast Browser.document.getElementById("height");
         iptHeight.value = Std.string(height);
-
-        Browser.document.getElementById("setSize").onclick = setSize;
+        iptHeight.onchange = setSize;
 
         Browser.document.getElementById("iPhone").onclick = setIPhone;
         Browser.document.getElementById("music-stand").onclick = setMusicStand;

@@ -324,14 +324,9 @@ Std["int"] = function(x) {
 	return x | 0;
 };
 var Surface = function(canvas) {
-	this.mousePressing = false;
 	this.inToPx = 20;
 	this.elements = [];
 	this.canvas = canvas;
-	canvas.onmousedown = $bind(this,this.mousedown);
-	canvas.onmouseup = $bind(this,this.mouseup);
-	canvas.onmousemove = $bind(this,this.mousemove);
-	canvas.onmouseleave = $bind(this,this.mouseleave);
 };
 Surface.__name__ = true;
 Surface.prototype = {
@@ -367,22 +362,6 @@ Surface.prototype = {
 	,getPosOnCanvas: function(clientX,clientY) {
 		var rect = this.canvas.getBoundingClientRect();
 		return { x : clientX - rect.left, y : clientY - rect.top};
-	}
-	,mousedown: function(event) {
-		this.mousePressing = true;
-	}
-	,mouseup: function(event) {
-		this.mousePressing = false;
-		if(this.elementDragged != null) this.elementDragged = null;
-	}
-	,mousemove: function(event) {
-		if(this.elementDragged == null) return;
-		var pos = this.getPosOnCanvas(event.clientX,event.clientY);
-		console.log(pos);
-	}
-	,mouseleave: function(event) {
-		this.mousePressing = false;
-		if(this.elementDragged != null) this.elementDragged = null;
 	}
 };
 var element_IElement = function() { };
@@ -551,14 +530,12 @@ var state_Custom = function(surface,widthInInch,heightInInch) {
 	if(widthInInch == null) widthInInch = 0;
 	this.container = window.document.getElementById("custom");
 	this.container.style.display = "inline-block";
-	this.sampleContainer = window.document.getElementById("samples");
-	this.sampleContainer.style.display = "block";
 	this.surface = surface;
 	this.setWidth(widthInInch);
 	this.setHeight(heightInInch);
 	this.iptPxToIn = window.document.getElementById("inToPx");
 	if(surface.inToPx == null) this.iptPxToIn.value = "null"; else this.iptPxToIn.value = "" + surface.inToPx;
-	window.document.getElementById("changeInToPx").onclick = $bind(this,this.changeInToPx);
+	this.iptPxToIn.onchange = $bind(this,this.changeInToPx);
 	this.explanationContainer = window.document.getElementById("explanations-custom");
 	this.explanationContainer.style.display = "block";
 	var toggle = window.document.getElementById("toggle-details-custom");
@@ -592,7 +569,6 @@ state_Custom.prototype = {
 	}
 	,destroy: function() {
 		this.container.style.display = "none";
-		this.sampleContainer.style.display = "none";
 		this.explanationContainer.style.display = "none";
 		this.surface.removeAll();
 	}
@@ -622,9 +598,10 @@ state_Custom.prototype = {
 		window.document.getElementById("go-finalize").onclick = $bind(this,this.displayFinal);
 		this.iptWidth = window.document.getElementById("width");
 		this.iptWidth.value = Std.string(this.width);
+		this.iptWidth.onchange = $bind(this,this.setSize);
 		this.iptHeight = window.document.getElementById("height");
 		this.iptHeight.value = Std.string(this.height);
-		window.document.getElementById("setSize").onclick = $bind(this,this.setSize);
+		this.iptHeight.onchange = $bind(this,this.setSize);
 		window.document.getElementById("iPhone").onclick = $bind(this,this.setIPhone);
 		window.document.getElementById("music-stand").onclick = $bind(this,this.setMusicStand);
 	}
@@ -636,7 +613,7 @@ var state_Final = function(surface,width,height) {
 	this.stand = new Stand(surface,width,height,state_Final.BIT_WIDTH,state_Final.THICKNESS);
 	this.iptPxToIn = window.document.getElementById("inToPx");
 	if(surface.inToPx == null) this.iptPxToIn.value = "null"; else this.iptPxToIn.value = "" + surface.inToPx;
-	window.document.getElementById("changeInToPx").onclick = $bind(this,this.changeInToPx);
+	this.iptPxToIn.onchange = $bind(this,this.changeInToPx);
 	this.explanationContainer = window.document.getElementById("explanations-final");
 	this.explanationContainer.style.display = "block";
 	var toggle = window.document.getElementById("toggle-details-final");
@@ -683,13 +660,16 @@ state_Final.prototype = {
 		window.document.getElementById("go-customize").onclick = $bind(this,this.displayCustom);
 		this.iptFeedrate = window.document.getElementById("feedrate");
 		this.iptFeedrate.value = Std.string(state_Final.FEEDRATE);
+		this.iptFeedrate.onchange = $bind(this,this.setParameters);
 		this.iptThickness = window.document.getElementById("thickness");
 		this.iptThickness.value = Std.string(state_Final.THICKNESS);
+		this.iptThickness.onchange = $bind(this,this.setParameters);
 		this.iptBitLength = window.document.getElementById("bitLength");
 		this.iptBitLength.value = Std.string(state_Final.BIT_LENGTH);
+		this.iptBitLength.onchange = $bind(this,this.setParameters);
 		this.iptBitWidth = window.document.getElementById("bitWidth");
 		this.iptBitWidth.value = Std.string(state_Final.BIT_WIDTH);
-		window.document.getElementById("setParameters").onclick = $bind(this,this.setParameters);
+		this.iptBitWidth.onchange = $bind(this,this.setParameters);
 		window.document.getElementById("generate").onclick = $bind(this,this.generateCode);
 	}
 };

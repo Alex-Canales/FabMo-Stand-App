@@ -1,0 +1,11 @@
+{
+    "name":"Stand device",
+    "main":"./index.html",
+    "icon":"icon.png",
+    "icon_color":"green",
+    "version":"0.0.1",
+    "author":"Alex",
+    "target":["router","laser_cutter"],
+    "id":"stand-device",
+    "description":"Make stand device according to the width and height given."
+}

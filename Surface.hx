@@ -12,17 +12,10 @@ class Surface
     public var canvas:CanvasElement;
     private var elements:Array<IElement>;
 
-    private var mousePressing:Bool = false;
-    private var elementDragged:IElement;
-
     public function new(canvas:CanvasElement)
     {
         elements = new Array<IElement>();
         this.canvas = canvas;
-        canvas.onmousedown = mousedown;
-        canvas.onmouseup = mouseup;
-        canvas.onmousemove = mousemove;
-        canvas.onmouseleave = mouseleave;
     }
 
     public function add(element:IElement):Void
@@ -67,34 +60,5 @@ class Surface
     {
         var rect:ClientRect = canvas.getBoundingClientRect();
         return { x : clientX - rect.left, y : clientY - rect.top };
-    }
-
-    private function mousedown(event:Dynamic):Void
-    {
-        mousePressing = true;
-        //TODO: test dragging or firing callback
-    }
-
-    private function mouseup(event:Dynamic):Void
-    {
-        mousePressing = false;
-        if(elementDragged != null)
-            elementDragged = null;
-    }
-
-    private function mousemove(event:Dynamic):Void
-    {
-        if(elementDragged == null)
-            return;
-        var pos = getPosOnCanvas(event.clientX, event.clientY);
-        trace(pos);
-        //TODO: drag element, if change, draw();
-    }
-
-    private function mouseleave(event:Dynamic):Void
-    {
-        mousePressing = false;
-        if(elementDragged != null)
-            elementDragged = null;
     }
 }
