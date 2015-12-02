@@ -4,6 +4,7 @@ import js.Browser;
 import js.html.Document;
 import js.html.Element;
 import js.html.InputElement;
+import stand.*;
 
 class Final implements IState
 {
@@ -19,6 +20,9 @@ class Final implements IState
 
     private var stand:Stand;
 
+    private var width:Float;
+    private var height:Float;
+
     private var iptFeedrate:InputElement;
     private var iptBitWidth:InputElement;
     private var iptBitLength:InputElement;
@@ -31,7 +35,9 @@ class Final implements IState
         container.style.display = "inline-block";
 
         this.surface = surface;
-        stand = new Stand(surface, width, height, BIT_WIDTH, THICKNESS);
+        this.width = width;
+        this.height = height;
+        stand = new StandVertical(surface, width, height, BIT_WIDTH, THICKNESS);
 
         iptPxToIn = cast Browser.document.getElementById("inToPx");
         iptPxToIn.value = Std.string(surface.inToPx);
@@ -44,6 +50,12 @@ class Final implements IState
         //NOTE: do not put modification on the surface here
     }
 
+    public function create():Void
+    {
+        stand.createElements();
+        setButtons();
+    }
+
     private function toggleDetails()
     {
         var elt:Element = Browser.document.getElementById("details-final");
@@ -51,12 +63,6 @@ class Final implements IState
             elt.style.display = "block";
         else
             elt.style.display = "none";
-    }
-
-    public function create():Void
-    {
-        stand.createElements();
-        createButtons();
     }
 
     public function destroy():Void
@@ -92,11 +98,39 @@ class Final implements IState
     {
         var bitLength:Float = App.checkFloat(iptBitLength);
         var feedrate:Float = App.checkFloat(iptFeedrate);
-        var code:String = stand.getGCode(bitLength, feedrate);
-        Job.submitJob(code, { filename : "stand.ngc" });
+
+        var codes:Array<String> = stand.getGCode(bitLength, feedrate);
+        if(codes.length > 1)
+        {
+            Job.submitJob(codes[0], { filename : "stand-central.ngc" });
+            Job.submitJob(codes[1], { filename : "stand-support.ngc" });
+        }
+        else
+            Job.submitJob(codes[0], { filename : "stand.ngc" });
     }
 
-    private function createButtons():Void
+    private function setStandVertical():Void
+    {
+        stand = new StandVertical(surface, width, height,
+                App.checkFloat(iptBitWidth), App.checkFloat(iptThickness));
+        stand.createElements();
+    }
+
+    private function setStandHorizontal():Void
+    {
+        stand = new StandHorizontal(surface, width, height,
+                App.checkFloat(iptBitWidth), App.checkFloat(iptThickness));
+        stand.createElements();
+    }
+
+    private function setStandFiles():Void
+    {
+        stand = new StandFiles(surface, width, height,
+                App.checkFloat(iptBitWidth), App.checkFloat(iptThickness));
+        stand.createElements();
+    }
+
+    private function setButtons():Void
     {
         Browser.document.getElementById("go-customize").onclick = displayCustom;
         iptFeedrate = cast Browser.document.getElementById("feedrate");
@@ -111,6 +145,13 @@ class Final implements IState
         iptBitWidth = cast Browser.document.getElementById("bitWidth");
         iptBitWidth.value = Std.string(BIT_WIDTH);
         iptBitWidth.onchange = setParameters;
+
+        var iptVertical:InputElement;
+        iptVertical = cast Browser.document.getElementById("vertical");
+        iptVertical.onchange = setStandVertical;
+        iptVertical.checked = true;
+        Browser.document.getElementById("horizontal").onchange = setStandHorizontal;
+        Browser.document.getElementById("twoFiles").onchange = setStandFiles;
 
         Browser.document.getElementById("generate").onclick = generateCode;
     }
