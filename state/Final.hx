@@ -102,11 +102,11 @@ class Final implements IState
         var codes:Array<String> = stand.getGCode(bitLength, feedrate);
         if(codes.length > 1)
         {
-            Job.submitJob(codes[0], { filename : "stand-central.ngc" });
-            Job.submitJob(codes[1], { filename : "stand-support.ngc" });
+            Job.submitJob(codes[0], { filename : "stand-central.nc" });
+            Job.submitJob(codes[1], { filename : "stand-support.nc" });
         }
         else
-            Job.submitJob(codes[0], { filename : "stand.ngc" });
+            Job.submitJob(codes[0], { filename : "stand.nc" });
     }
 
     private function setStandVertical():Void

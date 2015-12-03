@@ -342,4 +342,22 @@ class Stand
     {
         return [];
     }
+
+    private function getBeginningGCode():String
+    {
+        var code:String = "G20\nG90\n";
+        code += g(0, 0, null, null, 2) + "\n";
+        code += "M4 (spindle on)\n";
+
+        return code;
+    }
+
+    private function getEndingGCode():String
+    {
+        var code:String = g(0, 0, null, null, 2) + "\n";
+        code += g(0, 0, 0, 0) + "\n";
+        code += "M5\nM2\nM30";
+
+        return code;
+    }
 }

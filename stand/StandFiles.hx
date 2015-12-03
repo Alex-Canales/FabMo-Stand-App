@@ -139,20 +139,18 @@ class StandFiles extends Stand
         var pathSupportPart:Array<Point> = getPathSupportPart();
         var pathSupportCarving:Array<Point> = getPathSupportCarving();
 
-        var codeBeginning:String = "G20 G90\n";
-        codeBeginning += g(0, feedrate, null, null, 2) + "\n";
-        var codeEnding:String = "M30";
-        var codeSupport:String = codeBeginning;
-        var codeCentral:String = codeBeginning;
+        var codeSupport:String = getBeginningGCode();
+        var codeCentral:String = getBeginningGCode();
 
-        codeCentral += cutPath(pathDogbone, -thickness, bitLength, feedrate) + "\n";
+        codeCentral += cutPath(pathDogbone, -thickness, bitLength, feedrate);
+        codeCentral += "\n";
         codeCentral += cutPath(pathCentral, -thickness, bitLength, feedrate, true);
-        codeCentral += "\n" + codeEnding;
+        codeCentral += "\n" + getEndingGCode();
 
         codeSupport += cutPath(pathSupportCarving, -carvDepth, bitLength, feedrate);
         codeSupport +=  "\n";
         codeSupport += cutPath(pathSupportPart, -thickness, bitLength, feedrate, true);
-        codeSupport += "\n" + codeEnding;
+        codeSupport += "\n" + getEndingGCode();
 
         return [codeCentral, codeSupport];
     }

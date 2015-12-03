@@ -93,7 +93,7 @@ class StandHorizontal extends Stand
         var pathCentral:Array<Point> = getPathCentral();
         var pathSupportPart:Array<Point> = getPathSupportPart();
         var pathSupportCarving:Array<Point> = getPathSupportCarving();
-        var code:String = "G20 G90\n";
+        var code:String = getBeginningGCode();
 
         //It is better to do carving and simple cuts before cutting parts
         // (for the stability)
@@ -106,7 +106,7 @@ class StandHorizontal extends Stand
         code += cutPath(pathSupportPart, -thickness, bitLength, feedrate, true);
         code += "\n";
 
-        code += "M30";
+        code += getEndingGCode();
         return [code];
     }
 }

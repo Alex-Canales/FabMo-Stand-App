@@ -3,24 +3,28 @@ package;
 import js.html.Document;
 import js.html.Element;
 import js.html.InputElement;
+import js.html.CanvasElement;
 import js.Browser;
 
 import state.IState;
 
 typedef Point = { x:Float, y:Float };
 
+/**
+ * Main class of the app. Starts the app and 
+ */
+
 class App
 {
-    private var document:Document = Browser.document;
-    private var surface:Surface;
-
     public static var currentState:IState;
 
-    public function new()
+    // public function new()
+    static public function main()
     {
         var iptPxToIn:InputElement;
+        var canvas:CanvasElement = cast Browser.document.getElementById("canvas");
 
-        surface = new Surface(cast document.getElementById("canvas"));
+        var surface:Surface = new Surface(canvas);
         switchState(new state.Custom(surface));
 
         iptPxToIn = cast Browser.document.getElementById("inToPx");

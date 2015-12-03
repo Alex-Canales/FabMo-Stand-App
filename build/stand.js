@@ -5,15 +5,16 @@ function $extend(from, fields) {
 	if( fields.toString !== Object.prototype.toString ) proto.toString = fields.toString;
 	return proto;
 }
-var App = function() {
-	this.document = window.document;
-	var iptPxToIn;
-	this.surface = new Surface(this.document.getElementById("canvas"));
-	App.switchState(new state_Custom(this.surface));
-	iptPxToIn = window.document.getElementById("inToPx");
-	iptPxToIn.value = Std.string(this.surface.inToPx);
-};
+var App = function() { };
 App.__name__ = true;
+App.main = function() {
+	var iptPxToIn;
+	var canvas = window.document.getElementById("canvas");
+	var surface = new Surface(canvas);
+	App.switchState(new state_Custom(surface));
+	iptPxToIn = window.document.getElementById("inToPx");
+	if(surface.inToPx == null) iptPxToIn.value = "null"; else iptPxToIn.value = "" + surface.inToPx;
+};
 App.switchState = function(newState) {
 	if(App.currentState != null) {
 		App.currentState.destroy();
@@ -65,11 +66,6 @@ HxOverrides.remove = function(a,obj) {
 	if(i == -1) return false;
 	a.splice(i,1);
 	return true;
-};
-var Main = function() { };
-Main.__name__ = true;
-Main.main = function() {
-	new App();
 };
 Math.__name__ = true;
 var Std = function() { };
@@ -475,6 +471,18 @@ stand_Stand.prototype = {
 	,getGCode: function(bitLength,feedrate) {
 		return [];
 	}
+	,getBeginningGCode: function() {
+		var code = "G20\nG90\n";
+		code += this.g(0,0,null,null,2) + "\n";
+		code += "M4 (spindle on)\n";
+		return code;
+	}
+	,getEndingGCode: function() {
+		var code = this.g(0,0,null,null,2) + "\n";
+		code += this.g(0,0,0,0) + "\n";
+		code += "M5\nM2\nM30";
+		return code;
+	}
 };
 var stand_StandFiles = function(surface,width,height,bitWidth,thickness) {
 	this.marginSeparation = 50;
@@ -563,18 +571,16 @@ stand_StandFiles.prototype = $extend(stand_Stand.prototype,{
 		var pathCentral = this.getPathCentral();
 		var pathSupportPart = this.getPathSupportPart();
 		var pathSupportCarving = this.getPathSupportCarving();
-		var codeBeginning = "G20 G90\n";
-		codeBeginning += this.g(0,feedrate,null,null,2) + "\n";
-		var codeEnding = "M30";
-		var codeSupport = codeBeginning;
-		var codeCentral = codeBeginning;
-		codeCentral += this.cutPath(pathDogbone,-this.thickness,bitLength,feedrate) + "\n";
+		var codeSupport = this.getBeginningGCode();
+		var codeCentral = this.getBeginningGCode();
+		codeCentral += this.cutPath(pathDogbone,-this.thickness,bitLength,feedrate);
+		codeCentral += "\n";
 		codeCentral += this.cutPath(pathCentral,-this.thickness,bitLength,feedrate,true);
-		codeCentral += "\n" + codeEnding;
+		codeCentral += "\n" + this.getEndingGCode();
 		codeSupport += this.cutPath(pathSupportCarving,-carvDepth,bitLength,feedrate);
 		codeSupport += "\n";
 		codeSupport += this.cutPath(pathSupportPart,-this.thickness,bitLength,feedrate,true);
-		codeSupport += "\n" + codeEnding;
+		codeSupport += "\n" + this.getEndingGCode();
 		return [codeCentral,codeSupport];
 	}
 });
@@ -636,7 +642,7 @@ stand_StandHorizontal.prototype = $extend(stand_Stand.prototype,{
 		var pathCentral = this.getPathCentral();
 		var pathSupportPart = this.getPathSupportPart();
 		var pathSupportCarving = this.getPathSupportCarving();
-		var code = "G20 G90\n";
+		var code = this.getBeginningGCode();
 		code += this.g(0,feedrate,null,null,2) + "\n";
 		code += this.cutPath(pathDogbone,-this.thickness,bitLength,feedrate) + "\n";
 		code += this.cutPath(pathSupportCarving,-carvDepth,bitLength,feedrate);
@@ -645,7 +651,7 @@ stand_StandHorizontal.prototype = $extend(stand_Stand.prototype,{
 		code += "\n";
 		code += this.cutPath(pathSupportPart,-this.thickness,bitLength,feedrate,true);
 		code += "\n";
-		code += "M30";
+		code += this.getEndingGCode();
 		return [code];
 	}
 });
@@ -707,7 +713,7 @@ stand_StandVertical.prototype = $extend(stand_Stand.prototype,{
 		var pathCentral = this.getPathCentral();
 		var pathSupportPart = this.getPathSupportPart();
 		var pathSupportCarving = this.getPathSupportCarving();
-		var code = "G20 G90\n";
+		var code = this.getBeginningGCode();
 		code += this.g(0,feedrate,null,null,2) + "\n";
 		code += this.cutPath(pathDogbone,-this.thickness,bitLength,feedrate) + "\n";
 		code += this.cutPath(pathSupportCarving,-carvDepth,bitLength,feedrate);
@@ -716,7 +722,7 @@ stand_StandVertical.prototype = $extend(stand_Stand.prototype,{
 		code += "\n";
 		code += this.cutPath(pathSupportPart,-this.thickness,bitLength,feedrate,true);
 		code += "\n";
-		code += "M30";
+		code += this.getEndingGCode();
 		return [code];
 	}
 });
@@ -854,9 +860,9 @@ state_Final.prototype = {
 		var feedrate = App.checkFloat(this.iptFeedrate);
 		var codes = this.stand.getGCode(bitLength,feedrate);
 		if(codes.length > 1) {
-			Job.submitJob(codes[0],{ filename : "stand-central.ngc"});
-			Job.submitJob(codes[1],{ filename : "stand-support.ngc"});
-		} else Job.submitJob(codes[0],{ filename : "stand.ngc"});
+			Job.submitJob(codes[0],{ filename : "stand-central.nc"});
+			Job.submitJob(codes[1],{ filename : "stand-support.nc"});
+		} else Job.submitJob(codes[0],{ filename : "stand.nc"});
 	}
 	,setStandVertical: function() {
 		this.stand = new stand_StandVertical(this.surface,this.width,this.height,App.checkFloat(this.iptBitWidth),App.checkFloat(this.iptThickness));
@@ -908,5 +914,5 @@ state_Final.FEEDRATE = 120;
 state_Final.THICKNESS = 0.25;
 state_Final.BIT_LENGTH = 1;
 state_Final.BIT_WIDTH = 0.25;
-Main.main();
+App.main();
 })(typeof console != "undefined" ? console : {log:function(){}});
