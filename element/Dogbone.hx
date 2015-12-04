@@ -2,29 +2,40 @@ package element;
 
 import js.html.CanvasRenderingContext2D;
 
+/**
+ * This class represents the shape of a dogbone.
+ * In woodworking, a dogbone is a retangular hole with round relief in the
+ * corners. It is used to allow rectangular objects to be inserted into it.
+ */
 class Dogbone implements IElement
 {
     public var x:Float;
     public var y:Float;
-    public var draggable:Bool;
-    public var callback:Dynamic;  //callback function
     public var width:Float;
     public var height:Float;
     public var radius:Float;
 
-
-    public function new(x:Float, y:Float, draggable:Bool, callback:Dynamic,
-            width:Float, height:Float, radius:Float)
+    /**
+     * Creates a dogbone. Every values are in inch.
+     * @param  x       The x position.
+     * @param  y       The y position.
+     * @param  width   The width.
+     * @param  height  The height.
+     * @param  radius  The radius of the corners.
+     */
+    public function new(x:Float, y:Float, width:Float, height:Float,
+            radius:Float)
     {
         this.x = x;
         this.y = y;
-        this.draggable = draggable;
-        this.callback = callback;
         this.width = width;
         this.height = height;
         this.radius = radius;
     }
 
+    /**
+     * Draws the dogbone in the context.
+     */
     public function draw(context:CanvasRenderingContext2D):Void
     {
         var xLeftBone:Float = x + radius;

@@ -8,17 +8,28 @@ import js.Browser;
 
 import state.IState;
 
+/**
+ * Defines a point.
+ */
 typedef Point = { x:Float, y:Float };
 
+//TODO: see to modify Coordinate by Rectangle or something like that
 /**
- * Main class of the app. Starts the app and 
+ * Defines a coordinate/rectangle.
+ */
+typedef Coordinate = { x : Float, y : Float, width : Float, height : Float };
+
+/**
+ * Main class of the app. Starts the app and contains some useful functions.
  */
 
 class App
 {
     public static var currentState:IState;
 
-    // public function new()
+    /**
+     * Main function. Starts the app.
+     */
     static public function main()
     {
         var iptPxToIn:InputElement;
@@ -31,6 +42,10 @@ class App
         iptPxToIn.value = Std.string(surface.inToPx);
     }
 
+    /**
+     * Change the displayed state with the new one.
+     * @param  newState  The new state to display.
+     */
     public static function switchState(newState:IState)
     {
         if(currentState != null)
@@ -43,6 +58,14 @@ class App
     }
 
     //If value not a number, becomes 0
+    /**
+     * Checks if the input text contains a correct float number. If not or if
+     * the number is inferior to the given minimal value, change  the number by
+     * this value.
+     * @param   element  The element to check.
+     * @param   minVal   The minimal value to put.
+     * @return  The value inside the element (after checking).
+     */
     public static function checkFloat(element:InputElement, minVal:Float=0):Float
     {
         var number:Float = Std.parseFloat(element.value);
@@ -53,28 +76,4 @@ class App
 
         return number;
     }
-
-    public static function createButton(text:String, callback:Dynamic):Element
-    {
-        var button:Element = Browser.document.createElement("button");
-        button.innerHTML = text;
-        button.onclick = callback;
-        return button;
-    }
-
-    public static function createLabel(text:String):Element
-    {
-        var label:Element = Browser.document.createElement("label");
-        label.innerHTML = text;
-        return label;
-    }
-
-    public static function createInputText(value:String):InputElement
-    {
-        var input:InputElement = cast Browser.document.createElement("input");
-        input.type = "text";
-        input.value = cast value;
-        return input;
-    }
-
 }

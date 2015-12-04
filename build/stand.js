@@ -30,23 +30,6 @@ App.checkFloat = function(element,minVal) {
 	element.value = number;
 	return number;
 };
-App.createButton = function(text,callback) {
-	var button = window.document.createElement("button");
-	button.innerHTML = text;
-	button.onclick = callback;
-	return button;
-};
-App.createLabel = function(text) {
-	var label = window.document.createElement("label");
-	label.innerHTML = text;
-	return label;
-};
-App.createInputText = function(value) {
-	var input = window.document.createElement("input");
-	input.type = "text";
-	input.value = value;
-	return input;
-};
 var HxOverrides = function() { };
 HxOverrides.__name__ = true;
 HxOverrides.indexOf = function(a,obj,i) {
@@ -112,18 +95,12 @@ Surface.prototype = {
 	,clear: function(context) {
 		context.clearRect(0,0,context.canvas.width,context.canvas.height);
 	}
-	,getPosOnCanvas: function(clientX,clientY) {
-		var rect = this.canvas.getBoundingClientRect();
-		return { x : clientX - rect.left, y : clientY - rect.top};
-	}
 };
 var element_IElement = function() { };
 element_IElement.__name__ = true;
-var element_Dogbone = function(x,y,draggable,callback,width,height,radius) {
+var element_Dogbone = function(x,y,width,height,radius) {
 	this.x = x;
 	this.y = y;
-	this.draggable = draggable;
-	this.callback = callback;
 	this.width = width;
 	this.height = height;
 	this.radius = radius;
@@ -165,13 +142,11 @@ element_Dogbone.prototype = {
 		context.stroke();
 	}
 };
-var element_Rectangle = function(x,y,draggable,callback,width,height,lineWidth,lineColor,fillColor) {
+var element_Rectangle = function(x,y,width,height,lineWidth,lineColor,fillColor) {
 	if(lineColor == null) lineColor = "black";
 	if(lineWidth == null) lineWidth = 1;
 	this.x = x;
 	this.y = y;
-	this.draggable = draggable;
-	this.callback = callback;
 	this.width = width;
 	this.height = height;
 	this.fillColor = fillColor;
@@ -193,11 +168,9 @@ element_Rectangle.prototype = {
 		context.stroke();
 	}
 };
-var element_Text = function(x,y,draggable,callback,text) {
+var element_Text = function(x,y,text) {
 	this.x = x;
 	this.y = y;
-	this.draggable = draggable;
-	this.callback = callback;
 	this.text = text;
 };
 element_Text.__name__ = true;
@@ -291,16 +264,16 @@ stand_Stand.prototype = {
 		var radiusBone = this.bitWidth * this.surface.inToPx / 2;
 		var wElt = this.width * this.surface.inToPx;
 		var hElt = this.height * this.surface.inToPx;
-		this.centralPart = new element_Rectangle(0,0,false,null,wElt,hElt);
+		this.centralPart = new element_Rectangle(0,0,wElt,hElt);
 		wElt = (this.width - 2 * stand_Stand.MARGIN_CENTRAL) * this.surface.inToPx;
 		hElt = this.thickness * this.surface.inToPx;
-		this.dogbone = new element_Dogbone(0,0,false,null,wElt,hElt,radiusBone);
+		this.dogbone = new element_Dogbone(0,0,wElt,hElt,radiusBone);
 		wElt = this.dogbone.width;
 		hElt = stand_Stand.HEIGHT_SUPPORT * this.surface.inToPx;
-		this.supportPart = new element_Rectangle(0,0,false,null,wElt,hElt);
+		this.supportPart = new element_Rectangle(0,0,wElt,hElt);
 		wElt = this.supportPart.width;
 		hElt = this.thickness * this.surface.inToPx;
-		this.supportCarving = new element_Rectangle(0,0,false,null,wElt,hElt,1,"grey","grey");
+		this.supportCarving = new element_Rectangle(0,0,wElt,hElt,1,"grey","grey");
 		this.surface.removeAll();
 		this.surface.add(this.centralPart);
 		this.surface.add(this.dogbone);
@@ -526,12 +499,12 @@ stand_StandFiles.prototype = $extend(stand_Stand.prototype,{
 	}
 	,createElements: function() {
 		stand_Stand.prototype.createElements.call(this);
-		this.rectangleSizeSupport = new element_Rectangle(0,0,false,null,1,1,null,"red");
-		this.horizontalSizeSupport = new element_Text(0,0,false,null,"0");
-		this.verticalSizeSupport = new element_Text(0,0,false,null,"0");
-		this.rectangleSizeCentral = new element_Rectangle(0,0,false,null,1,1,null,"red");
-		this.horizontalSizeCentral = new element_Text(0,0,false,null,"0");
-		this.verticalSizeCentral = new element_Text(0,0,false,null,"0");
+		this.rectangleSizeSupport = new element_Rectangle(0,0,1,1,null,"red");
+		this.horizontalSizeSupport = new element_Text(0,0,"0");
+		this.verticalSizeSupport = new element_Text(0,0,"0");
+		this.rectangleSizeCentral = new element_Rectangle(0,0,1,1,null,"red");
+		this.horizontalSizeCentral = new element_Text(0,0,"0");
+		this.verticalSizeCentral = new element_Text(0,0,"0");
 		this.surface.add(this.rectangleSizeSupport);
 		this.surface.add(this.horizontalSizeSupport);
 		this.surface.add(this.verticalSizeSupport);
@@ -612,9 +585,9 @@ stand_StandHorizontal.prototype = $extend(stand_Stand.prototype,{
 	}
 	,createElements: function() {
 		stand_Stand.prototype.createElements.call(this);
-		this.rectangleSize = new element_Rectangle(0,0,false,null,1,1,null,"red");
-		this.horizontalSize = new element_Text(0,0,false,null,"0");
-		this.verticalSize = new element_Text(0,0,false,null,"0");
+		this.rectangleSize = new element_Rectangle(0,0,1,1,null,"red");
+		this.horizontalSize = new element_Text(0,0,"0");
+		this.verticalSize = new element_Text(0,0,"0");
 		this.surface.add(this.rectangleSize);
 		this.surface.add(this.horizontalSize);
 		this.surface.add(this.verticalSize);
@@ -683,9 +656,9 @@ stand_StandVertical.prototype = $extend(stand_Stand.prototype,{
 	}
 	,createElements: function() {
 		stand_Stand.prototype.createElements.call(this);
-		this.rectangleSize = new element_Rectangle(0,0,false,null,1,1,null,"red");
-		this.horizontalSize = new element_Text(0,0,false,null,"0");
-		this.verticalSize = new element_Text(0,0,false,null,"0");
+		this.rectangleSize = new element_Rectangle(0,0,1,1,null,"red");
+		this.horizontalSize = new element_Text(0,0,"0");
+		this.verticalSize = new element_Text(0,0,"0");
 		this.surface.add(this.rectangleSize);
 		this.surface.add(this.horizontalSize);
 		this.surface.add(this.verticalSize);
@@ -752,12 +725,12 @@ state_Custom.prototype = {
 		if(elt.style.display == "none" || elt.style.display == "") elt.style.display = "block"; else elt.style.display = "none";
 	}
 	,create: function() {
-		this.createButtons();
+		this.setHTMLElements();
 		var wR = this.width * this.surface.inToPx;
 		var hR = this.height * this.surface.inToPx;
 		var x = 5;
 		var y = this.surface.canvas.height - hR - 5;
-		this.rectangle = new element_Rectangle(x,y,false,null,wR,hR);
+		this.rectangle = new element_Rectangle(x,y,wR,hR);
 		this.surface.add(this.rectangle);
 	}
 	,changeInToPx: function() {
@@ -797,7 +770,7 @@ state_Custom.prototype = {
 		this.rectangle.y = this.surface.canvas.height - this.rectangle.height - 5;
 		this.surface.draw();
 	}
-	,createButtons: function() {
+	,setHTMLElements: function() {
 		window.document.getElementById("go-finalize").onclick = $bind(this,this.displayFinal);
 		this.iptWidth = window.document.getElementById("width");
 		this.iptWidth.value = Std.string(this.width);

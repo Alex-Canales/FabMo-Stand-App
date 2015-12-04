@@ -57,13 +57,13 @@ class Custom implements IState
 
     public function create():Void
     {
-        createButtons();
+        setHTMLElements();
 
         var wR:Float = width * surface.inToPx;
         var hR:Float = height * surface.inToPx;
         var x:Float = 5;
         var y:Float = surface.canvas.height - hR - 5;
-        rectangle = new element.Rectangle(x, y, false, null, wR, hR);
+        rectangle = new element.Rectangle(x, y, wR, hR);
         surface.add(rectangle);
     }
 
@@ -124,7 +124,7 @@ class Custom implements IState
         surface.draw();
     }
 
-    private function createButtons():Void
+    private function setHTMLElements():Void
     {
         Browser.document.getElementById("go-finalize").onclick = displayFinal;
 

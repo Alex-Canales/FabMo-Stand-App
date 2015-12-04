@@ -5,8 +5,7 @@ import element.Rectangle;
 import element.Dogbone;
 import element.Text;
 import App.Point;
-
-typedef Coordinate = { x : Float, y : Float, width : Float, height : Float };
+import App.Coordinate;
 
 /* Generate the stand (graphical elements and the GCode) */
 class Stand
@@ -44,19 +43,19 @@ class Stand
         var radiusBone:Float = bitWidth * surface.inToPx / 2;
         var wElt:Float = width * surface.inToPx;
         var hElt:Float = height * surface.inToPx;
-        centralPart = new Rectangle(0, 0, false, null, wElt, hElt);
+        centralPart = new Rectangle(0, 0, wElt, hElt);
 
         wElt = (width - 2 * MARGIN_CENTRAL) * surface.inToPx;
         hElt = thickness * surface.inToPx;
-        dogbone = new Dogbone(0, 0, false, null, wElt, hElt, radiusBone);
+        dogbone = new Dogbone(0, 0, wElt, hElt, radiusBone);
 
         wElt = dogbone.width;
         hElt = HEIGHT_SUPPORT * surface.inToPx;
-        supportPart = new Rectangle(0, 0, false, null, wElt, hElt);
+        supportPart = new Rectangle(0, 0, wElt, hElt);
 
         wElt = supportPart.width;
         hElt = thickness * surface.inToPx;
-        supportCarving = new Rectangle(0, 0, false, null, wElt, hElt, 1,
+        supportCarving = new Rectangle(0, 0, wElt, hElt, 1,
                 "grey", "grey");
 
         surface.removeAll();

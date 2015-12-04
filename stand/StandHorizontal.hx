@@ -5,7 +5,7 @@ import element.Rectangle;
 import element.Dogbone;
 import element.Text;
 import App.Point;
-import stand.Stand.Coordinate;
+import App.Coordinate;
 
 class StandHorizontal extends Stand
 {
@@ -49,9 +49,9 @@ class StandHorizontal extends Stand
     {
         super.createElements();
 
-        rectangleSize = new Rectangle(0, 0, false, null, 1, 1, "red");
-        horizontalSize = new Text(0, 0, false, null, "0");
-        verticalSize = new Text(0, 0, false, null, "0");
+        rectangleSize = new Rectangle(0, 0, 1, 1, "red");
+        horizontalSize = new Text(0, 0, "0");
+        verticalSize = new Text(0, 0, "0");
         surface.add(rectangleSize);
         surface.add(horizontalSize);
         surface.add(verticalSize);
