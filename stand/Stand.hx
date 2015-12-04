@@ -7,7 +7,10 @@ import element.Text;
 import App.Point;
 import App.Coordinate;
 
-/* Generate the stand (graphical elements and the GCode) */
+/**
+ * Mother class for the class which generate the stand (graphical elements
+ * displayed and the GCode).
+ */
 class Stand
 {
     public static var MARGIN_CENTRAL(default, null):Float = 1/2;
@@ -25,6 +28,14 @@ class Stand
 
     private var surface:Surface;
 
+    /**
+     * Creates an instance of the stand class.
+     * @param  surface    The surface on which the elements will be drawn.
+     * @param  width      The width of the stand.
+     * @param  height     The height of the stand.
+     * @param  bitWidth   The width of the bit which will cut the board.
+     * @param  thickness  The thickness of the board which will be cut.
+     */
     public function new(surface:Surface, width:Float, height:Float,
             bitWidth:Float, thickness:Float)
     {
@@ -35,9 +46,16 @@ class Stand
         this.thickness = thickness;
     }
 
+    /**
+     * Uptdates the display of the size the whole operation will take on the
+     * board. Needs to be called when the parameters are changed.
+     */
     public function updateTotalSize():Void { }
 
-    // Create the basic elements and add them to the surface (don't draw or place them)
+    /**
+     * Creates the basic elements that constitues the stand and adds them to
+     * the surface (does not draw or place them).
+     */
     public function createElements():Void
     {
         var radiusBone:Float = bitWidth * surface.inToPx / 2;
@@ -65,12 +83,20 @@ class Stand
         surface.add(supportCarving);
     }
 
+    /**
+     * Sets the board thickness.
+     * @param  boardThickness  The board thickness.
+     */
     public function setBoardThickness(boardThickness:Float):Void
     {
         thickness = Math.max(0, boardThickness);
         createElements();
     }
 
+    /**
+     * Sets the bit width.
+     * @param  bitWidth  The bit width.
+     */
     public function setBitWidth(bitWidth:Float):Void
     {
         this.bitWidth = Math.max(0, bitWidth);
@@ -78,6 +104,15 @@ class Stand
     }
 
     //marginXinPx is the margin from the x side (if in two files, sepration...)
+    /**
+     * Gets the real coordinate (in inches) of the element.
+     * @param  element  The element.
+     * @param  marginXinPx  The margin of the element in pixel. This is useful
+     *                      when the stand is separated in two files. The
+     *                      element of the second file is displayed on the
+     *                      right.
+     * @return  The real coordinate.
+     */
     private function getRealCoordinate(element:IElement, marginXinPx:Float=0):Coordinate
     {
         var x:Float = element.x;
@@ -90,7 +125,16 @@ class Stand
         };
     }
 
-    // Write a G0 or G1 command, without \n at the end
+    /**
+     * Writes a G0 or G1 command, without an end line (\n) at the end.
+     * @param  type  The type of the command. Can be 0 or 1 only.
+     * @param  f     The feedrate. Is ignored if generating a G0 command (Will
+     *               not be put in the command).
+     * @param  x     The x parameter.
+     * @param  y     The y parameter.
+     * @param  z     The z parameter.
+     * @return  The command or an empty string if the parameters are wrong.
+     */
     private function g(type:Int, f:Float, ?x:Float, ?y:Float, ?z:Float):String
     {
         if(type != 0 && type != 1)
@@ -108,6 +152,11 @@ class Stand
         return code;
     }
 
+    /**
+     * Calculates the length of the vector.
+     * @param  vector  The vector.
+     * @return  The vector length.
+     */
     private function lengthVector(vector:Point):Float
     {
         return Math.sqrt(Math.pow(vector.x, 2) + Math.pow(vector.y, 2));
@@ -115,6 +164,18 @@ class Stand
 
     //The tap is in the middle of the path. No tap if size >= path size.
     //Returns [start, end]
+    /**
+     * Calculates the path for creating a tap. When cutting a rectangle in a
+     * material, taps are used to permit the board to be stable (if no tap, it
+     * is possible that the cut rectangle will be ejected from the material
+     * because of the spinning of the bit).
+     * Taps are situead in the middle of the path.
+     * @param  start  The path start.
+     * @param  end    The path end.
+     * @param  size   The tap size. If the size is superior or equal to the path
+     *                size, no tap is created.
+     * @return  The start (0) and end (1) points of the tap.
+     */
     private function calculateTap(start:Point, end:Point, size:Float):Array<Point>
     {
         var tap:Array<Point> = new Array<Point>();
@@ -153,6 +214,15 @@ class Stand
         return tap;
     }
 
+    /**
+     * Generates the GCode for the tap.
+     * @param  start          The path start.
+     * @param  end            The path end.
+     * @param  zCurrentDepth  The current z position of the current cut.
+     * @param  zDepthTopTap   The z position of the top of the tap.
+     * @param  feedrate       The feedrate.
+     * @return  The generated GCode.
+     */
     private function gcodeTap(start:Point, end:Point, zCurrentDepth:Float,
             zDepthTopTap:Float, feedrate:Float):String
     {
@@ -166,11 +236,21 @@ class Stand
         return codes.join("\n");
     }
 
-    // Returns the GCode for cutting this part
-    // The bit will insert in the first point then follow the path until
-    // the last point and leave. Continue until cut at the chosen depth.
-    // Assumes the bit is above the board and not inside
-    //  depth is negative (cutting into 3 inches => depth = -3)
+    /**
+     * Generates the GCode for cutting the path.
+     * Inserts the bit in the first point then follows the path until reaching
+     * the last point. Continues until cutting at the chosen depth then leaves.
+     * Assumes the bit is above the board and not inside.
+     * All number values are in inches.
+     * @param  path             The path.
+     * @param  depth            The depth of the cut. This value should be
+     *                          negative.
+     * @param  bitLength        The bit length.
+     * @param  feedrate         The feedrate.
+     * @param  rectangleAndTap  If true, will consider this path is a closed
+     *                          rectangle and will generate taps.
+     * @return  The generated GCode.
+     */
     private function cutPath(path:Array<Point>, depth:Float, bitLength:Float,
             feedrate:Float, ?rectangleAndTap:Bool=false):String
     {
@@ -220,6 +300,11 @@ class Stand
         return codes.join('\n');
     }
 
+    /**
+     * Gives the path for cutting the perimeter of the rectangle.
+     * @param  coordinate  The coordinate.
+     * @return  The path.
+     */
     private function getPathArroundRectangle(coordinate:Coordinate):Array<Point>
     {
         var halfW:Float = bitWidth / 2;
@@ -239,6 +324,12 @@ class Stand
         return path;
     }
 
+    /**
+     * Gives the path for cutting the perimeter and the inside of the rectangle.
+     * @param  coordinate  The coordinate.
+     * @param  bitWidth    The bit width.
+     * @return  The path.
+     */
     private function getPathInsideRectangle(coordinate:Coordinate,
             bitWidth:Float):Array<Point>
     {
@@ -292,11 +383,19 @@ class Stand
         return path;
     }
 
+    /**
+     * Gives the path for cutting the central part.
+     * @return  The path.
+     */
     private function getPathCentral():Array<Point>
     {
         return getPathArroundRectangle(getRealCoordinate(centralPart));
     }
 
+    /**
+     * Gives the path for cutting the dogbone in the central part.
+     * @return  The path.
+     */
     private function getPathDogbone():Array<Point>
     {
         var halfW:Float = bitWidth / 2;
@@ -325,23 +424,38 @@ class Stand
         return path;
     }
 
+    /**
+     * Gives the path for cutting the support part.
+     * @return  The path.
+     */
     private function getPathSupportPart():Array<Point>
     {
         return getPathArroundRectangle(getRealCoordinate(supportPart));
     }
 
+    /**
+     * Gives the path for cutting the carving in the support part.
+     * @return  The path.
+     */
     private function getPathSupportCarving():Array<Point>
     {
         var c:Coordinate = getRealCoordinate(supportCarving);
         return getPathInsideRectangle(c, bitWidth);
     }
 
-    // Returns array of GCode (each cell is one file)
+    /**
+     * Gives array of GCode (each cell is one file).
+     * @return  The Gcode.
+     */
     public function getGCode(bitLength:Float, feedrate:Float):Array<String>
     {
         return [];
     }
 
+    /**
+     * Gives the begging GCode used by all type of stand.
+     * @return  The Gcode.
+     */
     private function getBeginningGCode():String
     {
         var code:String = "G20\nG90\n";
@@ -351,6 +465,10 @@ class Stand
         return code;
     }
 
+    /**
+     * Gives the ending GCode used by all type of stand.
+     * @return  The Gcode.
+     */
     private function getEndingGCode():String
     {
         var code:String = g(0, 0, null, null, 2) + "\n";

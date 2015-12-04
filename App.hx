@@ -22,7 +22,6 @@ typedef Coordinate = { x : Float, y : Float, width : Float, height : Float };
 /**
  * Main class of the app. Starts the app and contains some useful functions.
  */
-
 class App
 {
     public static var currentState:IState;
