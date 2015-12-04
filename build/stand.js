@@ -267,7 +267,7 @@ stand_Stand.prototype = {
 		var hElt = this.height * this.surface.inToPx;
 		this.centralPart = new element_Rectangle(0,0,wElt,hElt);
 		wElt = (this.width - 2 * stand_Stand.MARGIN_CENTRAL) * this.surface.inToPx;
-		hElt = this.thickness * this.surface.inToPx;
+		hElt = (this.thickness + 0.0625) * this.surface.inToPx;
 		this.dogbone = new element_Dogbone(0,0,wElt,hElt,radiusBone);
 		wElt = this.dogbone.width;
 		hElt = stand_Stand.HEIGHT_SUPPORT * this.surface.inToPx;
@@ -387,6 +387,7 @@ stand_Stand.prototype = {
 		var currentY = y + halfW;
 		var keepGoing = true;
 		var goRight = true;
+		var yStep = bitWidth * 3 / 4;
 		if(width <= bitWidth) {
 			xMin = x + width / 2;
 			xMax = xMin;
@@ -409,7 +410,7 @@ stand_Stand.prototype = {
 				path.push({ x : xMin, y : currentY});
 			}
 			goRight = !goRight;
-			currentY += bitWidth;
+			currentY += yStep;
 		}
 		return path;
 	}
@@ -597,13 +598,14 @@ stand_StandHorizontal.prototype = $extend(stand_Stand.prototype,{
 	,placeElements: function() {
 		var inToPx = this.surface.inToPx;
 		var cHeight = this.surface.canvas.height;
-		var margin = this.bitWidth * 2 * inToPx;
-		var xLeft = margin;
+		var marginBorder = this.bitWidth * 2 * inToPx;
+		var marginParts = this.bitWidth * 2.5 * inToPx;
+		var xLeft = marginBorder;
 		this.centralPart.x = xLeft;
-		this.centralPart.y = cHeight - margin - this.centralPart.height;
+		this.centralPart.y = cHeight - marginBorder - this.centralPart.height;
 		this.dogbone.x = this.centralPart.x + stand_Stand.MARGIN_CENTRAL * inToPx;
 		this.dogbone.y = this.centralPart.y + this.centralPart.height - 0.875 * inToPx - this.dogbone.height;
-		this.supportPart.x = xLeft + margin + this.centralPart.width;
+		this.supportPart.x = xLeft + marginParts + this.centralPart.width;
 		this.supportPart.y = this.centralPart.y + this.centralPart.height - this.supportPart.height;
 		this.supportCarving.x = this.supportPart.x;
 		this.supportCarving.y = this.supportPart.y + this.supportPart.height - 0.5 * inToPx - this.supportCarving.height;
@@ -668,14 +670,15 @@ stand_StandVertical.prototype = $extend(stand_Stand.prototype,{
 	,placeElements: function() {
 		var inToPx = this.surface.inToPx;
 		var cHeight = this.surface.canvas.height;
-		var margin = this.bitWidth * 2 * inToPx;
-		var xLeft = margin;
+		var marginBorder = this.bitWidth * 2 * inToPx;
+		var marginParts = this.bitWidth * 2.5 * inToPx;
+		var xLeft = marginBorder;
 		this.centralPart.x = xLeft;
-		this.centralPart.y = cHeight - margin - this.centralPart.height;
+		this.centralPart.y = cHeight - marginBorder - this.centralPart.height;
 		this.dogbone.x = this.centralPart.x + stand_Stand.MARGIN_CENTRAL * inToPx;
 		this.dogbone.y = this.centralPart.y + this.centralPart.height - 0.875 * inToPx - this.dogbone.height;
 		this.supportPart.x = xLeft;
-		this.supportPart.y = this.centralPart.y - margin - this.supportPart.height;
+		this.supportPart.y = this.centralPart.y - marginParts - this.supportPart.height;
 		this.supportCarving.x = this.supportPart.x;
 		this.supportCarving.y = this.supportPart.y + this.supportPart.height - 0.5 * inToPx - this.supportCarving.height;
 		this.updateTotalSize();

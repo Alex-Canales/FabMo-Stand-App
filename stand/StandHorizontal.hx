@@ -85,16 +85,17 @@ class StandHorizontal extends Stand
     {
         var inToPx:Float = surface.inToPx;
         var cHeight:Float = surface.canvas.height;
-        var margin:Float = bitWidth * 2 * inToPx;
-        var xLeft:Float = margin;
+        var marginBorder:Float = bitWidth * 2 * inToPx;
+        var marginParts:Float = bitWidth * 2.5 * inToPx;
+        var xLeft:Float = marginBorder;
         centralPart.x = xLeft;
-        centralPart.y = cHeight - margin - centralPart.height;
+        centralPart.y = cHeight - marginBorder - centralPart.height;
 
         dogbone.x = centralPart.x + Stand.MARGIN_CENTRAL * inToPx;
         dogbone.y = centralPart.y + centralPart.height - 7 / 8 * inToPx -
             dogbone.height;
 
-        supportPart.x = xLeft + margin + centralPart.width;
+        supportPart.x = xLeft + marginParts + centralPart.width;
         supportPart.y = centralPart.y + centralPart.height - supportPart.height;
 
         supportCarving.x = supportPart.x;

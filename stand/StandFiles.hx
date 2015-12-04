@@ -41,6 +41,7 @@ class StandFiles extends Stand
      */
     override public function updateTotalSize():Void
     {
+        //Margin from the border of the board
         var margin:Float = bitWidth * 2;
 
         //Support part
@@ -55,12 +56,15 @@ class StandFiles extends Stand
         rectangleSizeSupport.width = pixelWidthSupport;
         rectangleSizeSupport.height = pixelHeightSupport;
 
-        horizontalSizeSupport.x = rectangleSizeSupport.x + rectangleSizeSupport.width / 2 - 5;
+        horizontalSizeSupport.x = rectangleSizeSupport.x +
+                                  rectangleSizeSupport.width / 2 - 5;
         horizontalSizeSupport.y = rectangleSizeSupport.y - 5;
         horizontalSizeSupport.text = Std.string(realWidthSupport);
 
-        verticalSizeSupport.x = rectangleSizeSupport.x + rectangleSizeSupport.width + 5;
-        verticalSizeSupport.y = rectangleSizeSupport.y + rectangleSizeSupport.height / 2 - 5;
+        verticalSizeSupport.x = rectangleSizeSupport.x +
+                                rectangleSizeSupport.width + 5;
+        verticalSizeSupport.y = rectangleSizeSupport.y +
+                                rectangleSizeSupport.height / 2 - 5;
         verticalSizeSupport.text = Std.string(realHeightSupport);
 
         //Central part
@@ -75,12 +79,15 @@ class StandFiles extends Stand
         rectangleSizeCentral.width = pixelWidthCentral;
         rectangleSizeCentral.height = pixelHeightCentral;
 
-        horizontalSizeCentral.x = rectangleSizeCentral.x + rectangleSizeCentral.width / 2 - 5;
+        horizontalSizeCentral.x = rectangleSizeCentral.x +
+                                  rectangleSizeCentral.width / 2 - 5;
         horizontalSizeCentral.y = rectangleSizeCentral.y - 5;
         horizontalSizeCentral.text = Std.string(realWidthCentral);
 
-        verticalSizeCentral.x = rectangleSizeCentral.x + rectangleSizeCentral.width + 5;
-        verticalSizeCentral.y = rectangleSizeCentral.y + rectangleSizeCentral.height / 2 - 5;
+        verticalSizeCentral.x = rectangleSizeCentral.x +
+                                rectangleSizeCentral.width + 5;
+        verticalSizeCentral.y = rectangleSizeCentral.y +
+                                rectangleSizeCentral.height / 2 - 5;
         verticalSizeCentral.text = Std.string(realHeightCentral);
     }
 

@@ -64,7 +64,7 @@ class Stand
         centralPart = new Rectangle(0, 0, wElt, hElt);
 
         wElt = (width - 2 * MARGIN_CENTRAL) * surface.inToPx;
-        hElt = thickness * surface.inToPx;
+        hElt = (thickness + 0.0625) * surface.inToPx;
         dogbone = new Dogbone(0, 0, wElt, hElt, radiusBone);
 
         wElt = dogbone.width;
@@ -345,6 +345,10 @@ class Stand
         var keepGoing:Bool = true;
         var goRight:Bool = true;
 
+        //This to make sure everything is cut (tried width bitWidth only, let
+        // material in the middle)
+        var yStep:Float = bitWidth * 3 / 4;
+
         if(width <= bitWidth)
         {
             xMin = x + width / 2;
@@ -361,6 +365,7 @@ class Stand
 
         while(keepGoing)
         {
+            //Checks if will not cut too much. If the case, adjust the position.
             if(currentY + halfW >= y + height)
             {
                 currentY = y + height - halfW;
@@ -377,7 +382,7 @@ class Stand
                 path.push({ x : xMin, y : currentY });
             }
             goRight = !goRight;
-            currentY += bitWidth;
+            currentY += yStep;
         }
 
         return path;
