@@ -78,8 +78,9 @@ Surface.prototype = {
 		this.elements.splice(0,this.elements.length);
 		this.draw();
 	}
-	,setInToPx: function(value) {
+	,set_inToPx: function(value) {
 		this.inToPx = Std["int"](Math.max(1,value));
+		return this.inToPx;
 	}
 	,draw: function() {
 		var context = this.canvas.getContext("2d",null);
@@ -734,7 +735,7 @@ state_Custom.prototype = {
 		this.surface.add(this.rectangle);
 	}
 	,changeInToPx: function() {
-		this.surface.setInToPx(Std["int"](App.checkFloat(this.iptPxToIn,1)));
+		this.surface.set_inToPx(Std["int"](App.checkFloat(this.iptPxToIn,1)));
 		this.setSize();
 	}
 	,setWidth: function(widthInInch) {
@@ -814,7 +815,7 @@ state_Final.prototype = {
 		this.surface.removeAll();
 	}
 	,changeInToPx: function() {
-		this.surface.setInToPx(Std["int"](App.checkFloat(this.iptPxToIn,1)));
+		this.surface.set_inToPx(Std["int"](App.checkFloat(this.iptPxToIn,1)));
 		this.setParameters();
 	}
 	,displayCustom: function() {

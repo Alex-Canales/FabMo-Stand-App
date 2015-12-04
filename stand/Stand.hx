@@ -8,7 +8,7 @@ import App.Point;
 import App.Coordinate;
 
 /**
- * Mother class for the class which generate the stand (graphical elements
+ * Mother class for the classes which generate the stand (graphical elements
  * displayed and the GCode).
  */
 class Stand
@@ -47,7 +47,7 @@ class Stand
     }
 
     /**
-     * Uptdates the display of the size the whole operation will take on the
+     * Updates the display of the size the whole operation will take on the
      * board. Needs to be called when the parameters are changed.
      */
     public function updateTotalSize():Void { }

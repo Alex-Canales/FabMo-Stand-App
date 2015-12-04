@@ -74,7 +74,7 @@ class Final implements IState
 
     private function changeInToPx():Void
     {
-        surface.setInToPx(Std.int(App.checkFloat(iptPxToIn, 1)));
+        surface.inToPx = Std.int(App.checkFloat(iptPxToIn, 1));
         setParameters();
     }
 

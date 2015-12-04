@@ -7,18 +7,34 @@ import element.Text;
 import App.Point;
 import App.Coordinate;
 
+/**
+ * Class which generates the stand in one file, each part side by side
+ * horizontally.
+ */
 class StandHorizontal extends Stand
 {
     private var rectangleSize:Rectangle;
     private var horizontalSize:Text;
     private var verticalSize:Text;
 
+    /**
+     * Creates an instance of the stand class.
+     * @param  surface    The surface on which the elements will be drawn.
+     * @param  width      The width of the stand.
+     * @param  height     The height of the stand.
+     * @param  bitWidth   The width of the bit which will cut the board.
+     * @param  thickness  The thickness of the board which will be cut.
+     */
     public function new(surface:Surface, width:Float,
             height:Float, bitWidth:Float, thickness:Float)
     {
         super(surface, width, height, bitWidth, thickness);
     }
 
+    /**
+     * Updates the display of the size the whole operation will take on the
+     * board. Needs to be called when the parameters are changed.
+     */
     override public function updateTotalSize():Void
     {
         var cSupport:Coordinate = getRealCoordinate(supportPart);
@@ -44,7 +60,10 @@ class StandHorizontal extends Stand
         verticalSize.text = Std.string(realHeight);
     }
 
-    // Create elements and add them to the surface (and draw and place them)
+    /**
+     * Creates the elements that constitues the stand and adds them to the
+     * surface (draws and places them).
+     */
     override public function createElements():Void
     {
         super.createElements();
@@ -59,7 +78,9 @@ class StandHorizontal extends Stand
         placeElements();
     }
 
-    // Set the elements position in the surface and draw the surface
+    /**
+     * Set the elements position on the surface and draws the surface
+     */
     private function placeElements():Void
     {
         var inToPx:Float = surface.inToPx;
@@ -85,7 +106,10 @@ class StandHorizontal extends Stand
         surface.draw();
     }
 
-    // Returns array of GCode (each cell is one file)
+    /**
+     * Gives array of GCode (each cell is one file).
+     * @return  The Gcode.
+     */
     override public function getGCode(bitLength:Float, feedrate:Float):Array<String>
     {
         var carvDepth:Float = thickness / 5;

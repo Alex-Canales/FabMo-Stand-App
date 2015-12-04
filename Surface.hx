@@ -11,9 +11,7 @@ import element.IElement;
  */
 class Surface
 {
-    //TODO: correct that
-    //We could do a getter/setter instead of putting that public
-    public var inToPx:Int = 20;
+    public var inToPx(default, set):Int = 20;
 
     public var canvas:CanvasElement;
     private var elements:Array<IElement>;
@@ -61,9 +59,10 @@ class Surface
      * Sets how much a inch is in pixel.
      * @param  value  The number of pixel an inch will take.
      */
-    public function setInToPx(value:Int):Void
+    public function set_inToPx(value:Int):Int
     {
         inToPx = Std.int(Math.max(1, value));
+        return inToPx;
     }
 
     /**
