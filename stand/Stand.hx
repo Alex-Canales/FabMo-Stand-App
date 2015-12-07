@@ -162,8 +162,6 @@ class Stand
         return Math.sqrt(Math.pow(vector.x, 2) + Math.pow(vector.y, 2));
     }
 
-    //The tap is in the middle of the path. No tap if size >= path size.
-    //Returns [start, end]
     /**
      * Calculates the path for creating a tap. When cutting a rectangle in a
      * material, taps are used to permit the board to be stable (if no tap, it

@@ -29,3 +29,12 @@ input {
     color: blue;
     text-decoration: underline;
 }
+
+.predifined {
+    width: 100%;
+}
+
+.option-title {
+    font-weight: bold;
+    margin-bottom: 0;
+}

@@ -8,41 +8,49 @@
 </head>
 <body>
     <div id="explanations-custom" class="explanations">
-        <p id="toggle-details-custom" class="toggle">Show explanations</p>
+        <h1>Size selection (1/2)</h1>
+        <p id="toggle-details-custom" class="toggle">Click here to show/hide the explanations</p>
         <div id="details-custom" class="hide">
             You can here set the size of your stand. Some samples are already
-            avaliable.
-            All sizes are in inches.
+            available. All values are in inches.
             <ul>
-                <li><strong>Width</strong> the width of the stand</li>
-                <li><strong>Height</strong> the height of the stand</li>
+                <li><strong>Width:</strong> the width of the stand</li>
+                <li><strong>Height:</strong> the height of the stand</li>
             </ul>
         </div>
     </div>
     <div id="explanations-final" class="explanations">
-        <p id="toggle-details-final" class="toggle">Show explanations</p>
+        <h1>Generation configuration (2/2)</h1>
+        <p id="toggle-details-final" class="toggle">Click here to show/hide the explanations</p>
         <div id="details-final" class="hide">
             <p>
-                You can set here the parameters for the cut.
+                You can set here the parameters for the cut. All values are in
+                inches.
             </p>
             <p>
-                You have access to a visualize version of the cut. It shows you
-                the total material needed and where the cut will appear (in
-                the left-bottom corner of the board).
+                You have access to a visualized version of the cut. It displays
+                how the material (board) will be cut. The surrounding red
+                rectangle show the size of material needed (on the sizes appears
+                the dimension in inch).
+            </p>
+            <p>
+                It is possible to chose how the different parts will be placed
+                on the board or if they should be cut in two different boards.
             </p>
             <ul>
-                <li><strong>Feedrate</strong> the feedrate during the cut</li>
-                <li><strong>Board thickness</strong> the board thickness</li>
-                <li><strong>Bit length</strong> the bit length</li>
-                <li><strong>Bit width</strong> the bit width</li>
+                <li><strong>Feed rate:</strong> the feed rate during the cut</li>
+                <li><strong>Board thickness:</strong> the board thickness</li>
+                <li><strong>Bit length:</strong> the bit length</li>
+                <li><strong>Bit width:</strong> the bit width</li>
             </ul>
         </div>
     </div>
 
     <canvas style="border:1px black solid;" id="canvas" width="400" height="400"></canvas>
+
     <div id="custom" class="gui">
         <button id="go-finalize">Next</button>
-        <!-- <p>Step 1/2</p> -->
+        <p class="option-title">Size:</p>
         <table>
             <tr>
                 <td> <label for="width">Width: </label> </td>
@@ -53,34 +61,35 @@
                 <td> <input id="height" type="text"/> </td>
             </tr>
         </table>
-        <!-- <button id="setSize">Set size</button> -->
-        <p>Predifined:</p>
-        <button id="iPhone">iPhone</button>
+        <p class="option-title">Predefined:</p>
+        <button id="iPhone" class="predifined">iPhone</button>
         <br/>
-        <button id="music-stand">Music stand</button>
+        <button id="music-stand" class="predifined">Music stand</button>
     </div>
+
     <div id="finalization" class="gui">
         <button id="go-customize">Back</button>
         <button id="generate">Generate</button>
-        <!-- <p>Step 2/2</p> -->
+        <p class="option-title">Cut options</p>
         <table>
-            <tr>
-                <td> <label for="feedrate">Feedrate:</label> </td>
-                <td> <input id="feedrate" type="text"/> </td>
-            </tr>
             <tr>
                 <td> <label for="thickness">Board thickness:</label> </td>
                 <td> <input id="thickness" type="text"/> </td>
             </tr>
             <tr>
-                <td> <label for="bitLength">Bit length:</label> </td>
-                <td> <input id="bitLength" type="text"/> </td>
+                <td> <label for="feedrate">Feed rate:</label> </td>
+                <td> <input id="feedrate" type="text"/> </td>
             </tr>
             <tr>
                 <td> <label for="bitWidth">Bit width:</label> </td>
                 <td> <input id="bitWidth" type="text"/> </td>
             </tr>
+            <tr>
+                <td> <label for="bitLength">Bit length:</label> </td>
+                <td> <input id="bitLength" type="text"/> </td>
+            </tr>
         </table>
+        <p class="option-title">File generation options:</p>
         <input id="vertical" type="radio" name="typeCut" value="vertical" checked />
         <label for="vertical">Vertical</label>
         <br />
@@ -90,15 +99,10 @@
         <input id="twoFiles" type="radio" name="typeCut" value="twoFiles" />
         <label for="twoFiles">Two files</label>
     </div>
-    <!-- <div id="samples" class="below"> -->
-    <!--     <!&#45;&#45; Should be images &#45;&#45;> -->
-    <!--     <button id="iPhone">iPhone</button> -->
-    <!--     <button id="music&#45;stand">Music stand</button> -->
-    <!-- </div> -->
+
     <div style="margin-bottom: 4px;">
         <label for="inToPx">Number of pixels for an inch: </label>
         <input id="inToPx" type="text" />
-        <!-- <button id="changeInToPx">Change display</button> -->
     </div>
 
     <script src="jquery.js"></script>

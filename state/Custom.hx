@@ -8,7 +8,6 @@ import js.html.InputElement;
 class Custom implements IState
 {
     public var container:Element;
-    // public var sampleContainer:Element;
     public var explanationContainer:Element;
     public var surface:Surface;
     private var iptPxToIn:InputElement;
@@ -28,8 +27,6 @@ class Custom implements IState
     {
         container = Browser.document.getElementById("custom");
         container.style.display = "inline-block";
-        // sampleContainer = Browser.document.getElementById("samples");
-        // sampleContainer .style.display = "block";
 
         this.surface = surface;
         setWidth(widthInInch);
@@ -86,7 +83,6 @@ class Custom implements IState
     public function destroy():Void
     {
         container.style.display = "none";
-        // sampleContainer.style.display = "none";
         explanationContainer.style.display = "none";
         surface.removeAll();
     }
