@@ -13,9 +13,9 @@ import state.IState;
  */
 typedef Point = { x:Float, y:Float };
 
-//TODO: see to modify Coordinate by Rectangle or something like that
 /**
- * Defines a coordinate/rectangle.
+ * Defines a coordinate/rectangle. Let it named Coordinate because Rectangle is
+ * already defined.
  */
 typedef Coordinate = { x : Float, y : Float, width : Float, height : Float };
 
@@ -56,7 +56,6 @@ class App
         currentState = newState;
     }
 
-    //If value not a number, becomes 0
     /**
      * Checks if the input text contains a correct float number. If not or if
      * the number is inferior to the given minimal value, change  the number by

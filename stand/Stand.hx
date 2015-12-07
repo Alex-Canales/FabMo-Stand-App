@@ -103,7 +103,6 @@ class Stand
         createElements();
     }
 
-    //marginXinPx is the margin from the x side (if in two files, sepration...)
     /**
      * Gets the real coordinate (in inches) of the element.
      * @param  element  The element.
@@ -191,7 +190,7 @@ class Stand
             y : vector.y / pathSize
         };
         var cutLength = (pathSize - size) / 2;
-        // Vector of the cut from the start to the end (relatively to the start
+        //Vector of the cut from the start to the end (relatively to the start
         // position):
         var vectorCut:Point = {
             x : cutLength * normalized.x,
@@ -306,7 +305,6 @@ class Stand
     private function getPathArroundRectangle(coordinate:Coordinate):Array<Point>
     {
         var halfW:Float = bitWidth / 2;
-        // var coordinate:Coordinate = getRealCoordinate(element);
         var xLeft:Float = coordinate.x - halfW;
         var xRight:Float = coordinate.x + coordinate.width + halfW;
         var yDown:Float = coordinate.y - halfW;
